@@ -20,15 +20,23 @@ public class SimpleProxy {
 				target.getClass().getClassLoader(),
 				target.getClass().getInterfaces(),
 				(Object proxy, Method method, Object[] args) -> {
-					if (method.getName().equals("register") && Objects.nonNull(method.getAnnotation(com.java.demo.annotion.Proxy.class))){
-						System.out.println("register start...");
-						method.invoke(target, args);
-						System.out.println("register end...");
-						return null;
-					}else {
+					if (Objects.nonNull(method.getAnnotation(com.java.demo.annotion.Proxy.class))){
+						if (method.getName().equals("register")){
+							System.out.println("register start...");
+							method.invoke(target, args);
+							System.out.println("register end...");
+							return null;
+						}else if (method.getName().equals("getEarlyBeanReference")){
+							System.out.println("proxy start...");
+							method.invoke(target, args);
+							System.out.println("proxy end...");
+							return proxy;
+						}
+					} else {
 						//if method have return, here you should return
 						return method.invoke(target, args);
 					}
+					return null;
 				}
 		);
 	}

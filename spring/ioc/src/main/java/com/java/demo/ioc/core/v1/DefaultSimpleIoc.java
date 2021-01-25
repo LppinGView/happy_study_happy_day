@@ -1,4 +1,4 @@
-package com.java.demo.ioc.core;
+package com.java.demo.ioc.core.v1;
 
 import java.util.Map;
 import java.util.Objects;
