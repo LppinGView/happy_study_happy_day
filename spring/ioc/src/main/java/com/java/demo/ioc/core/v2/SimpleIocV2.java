@@ -76,6 +76,9 @@ public class SimpleIocV2 {
     //三级缓存
     private static final Map<String, Object> singletonFactories = new HashMap(16);
 
+    /** Names of beans that are currently in creation. */
+    private static final Set<String> singletonsCurrentlyInCreation = Collections.newSetFromMap(new ConcurrentHashMap<>(16));
+
     private static Set<String> registeredSingletons = new LinkedHashSet<>(256);
 
     public static void main(String[] args) throws Exception {
@@ -130,7 +133,8 @@ public class SimpleIocV2 {
     //根据beanName从缓存中获取Bean实例
     private static Object getSingleton(String beanName){
         Object bean = singletonObjects.get(beanName);
-        if (null == bean){
+        //一级缓存不存在 同时正在被创建 此时实例正在被代理
+        if (null == bean && isSingletonsCurrentlyInCreation(beanName)){
             bean = earlySingletonObjects.get(beanName);
             if (null == bean){
                 ObjectFactory singletonFactory =(ObjectFactory) singletonFactories.get(beanName);
@@ -148,8 +152,9 @@ public class SimpleIocV2 {
 
     private static Object doCreateBean(Class<?> clzss) throws IllegalAccessException, InstantiationException {
         //创建实例
-        Object bean = clzss.newInstance();
         String beanName = clzss.getName();
+        beforeSingletonCreation(beanName);
+        Object bean = clzss.newInstance();
         //将实例化对象装入 三级缓存中 同时放入lamada表达式，作为后调方法
         addSingletonFactory(beanName, ()->
             getEarlyBeanReference(beanName, bean)
@@ -178,5 +183,13 @@ public class SimpleIocV2 {
         Object exposedObject = bean;
         MyProxyBeanPostProcessor proxyBeanPostProcessor = new MyProxyBeanPostProcessor();
         return proxyBeanPostProcessor.getEarlyBeanReference(beanName, exposedObject);
+    }
+
+    private static boolean isSingletonsCurrentlyInCreation(String beanName){
+        return singletonsCurrentlyInCreation.contains(beanName);
+    }
+
+    protected static void beforeSingletonCreation(String beanName) {
+        singletonsCurrentlyInCreation.add(beanName);
     }
 }
