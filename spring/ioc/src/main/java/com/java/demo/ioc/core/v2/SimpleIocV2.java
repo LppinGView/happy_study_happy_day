@@ -74,7 +74,7 @@ public class SimpleIocV2 {
      *
      */
     //三级缓存
-    private static final Map<String, Object> singletonFactories = new HashMap(16);
+    private static final Map<String, ObjectFactory<?>> singletonFactories = new HashMap(16);
 
     /** Names of beans that are currently in creation. */
     private static final Set<String> singletonsCurrentlyInCreation = Collections.newSetFromMap(new ConcurrentHashMap<>(16));
@@ -137,7 +137,7 @@ public class SimpleIocV2 {
         if (null == bean && isSingletonsCurrentlyInCreation(beanName)){
             bean = earlySingletonObjects.get(beanName);
             if (null == bean){
-                ObjectFactory singletonFactory =(ObjectFactory) singletonFactories.get(beanName);
+                ObjectFactory<?> singletonFactory = singletonFactories.get(beanName);
                 if (null != singletonFactory){
                     //处理三级缓存中的A的 ObjectFactory 即A的被代理对象
                     bean = singletonFactory.getObject();
