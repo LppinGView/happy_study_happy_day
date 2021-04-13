@@ -1,10 +1,138 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c18ac102-9567-42b8-a64d-c732ba120dba" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/queue/RedisSequenceGenerator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/queue/SequenceGenerator.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/domain/service/queue/ProcessorQueue.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/domain/service/queue/ProcessorQueueItem.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/infrastructure/impl/queue/RedisProcessorQueueImpl.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="spring-beans.schema" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
-        <option name="mavenHome" value="$APPLICATION_HOME_DIR$/plugins/maven/lib/maven3" />
+        <option name="localRepository" value="$MAVEN_REPOSITORY$" />
+        <option name="mavenHome" value="$USER_HOME$/.m2/wrapper/dists/apache-maven-3.8.1-bin/2l5mhf2pq2clrde7f7qp1rdt5m/apache-maven-3.8.1" />
+        <option name="userSettingsFile" value="$USER_HOME$/opt/maven/apache-maven-3.5.4/conf/settings.xml" />
       </MavenGeneralSettings>
     </option>
+  </component>
+  <component name="ProjectId" id="1r6vkUaHVAFlfdqk0eWdDJNNS9X" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="settings.editor.selected.configurable" value="MavenSettings" />
+    <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="DemoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="cache" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.redis.demo.DemoApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c18ac102-9567-42b8-a64d-c732ba120dba" name="Default Changelist" comment="" />
+      <created>1618309497739</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1618309497739</updated>
+      <workItem from="1618309500631" duration="2494000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="768" y="300" width="374" height="633" key="#com.intellij.ide.util.MemberChooser" timestamp="1618311540222">
+      <screen x="0" y="27" width="1920" height="1173" />
+    </state>
+    <state x="768" y="300" width="374" height="633" key="#com.intellij.ide.util.MemberChooser/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618311540222" />
+    <state x="743" y="374" width="424" height="491" key="FileChooserDialogImpl" timestamp="1618309635392">
+      <screen x="0" y="27" width="1920" height="1173" />
+    </state>
+    <state x="743" y="374" width="424" height="491" key="FileChooserDialogImpl/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618309635392" />
+    <state x="449" y="248" width="1022" height="737" key="SettingsEditor" timestamp="1618309637175">
+      <screen x="0" y="27" width="1920" height="1173" />
+    </state>
+    <state x="449" y="248" width="1022" height="737" key="SettingsEditor/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618309637175" />
+    <state x="462" y="205" width="986" height="823" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1618310657511">
+      <screen x="0" y="27" width="1920" height="1173" />
+    </state>
+    <state x="462" y="205" width="986" height="823" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618310657511" />
   </component>
 </project>
