@@ -1,5 +1,7 @@
 package com.redis.demo.core.queue;
 
+import com.redis.demo.utils.ConvertUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -28,19 +30,32 @@ public class RedisSequenceGenerator implements SequenceGenerator<Long>{
     }
 
     /**
-     * 分配序号
+     * 从全局中获取优先级序号，从组中获取当前序号
      * @param groupId
      * @param priority
      * @return
      */
     @Override
     public Long allocateSequence(long groupId, long priority) {
+        String groupSequenceKey = this.getCompanySequenceKey(groupId, priority);
+        long globalSeq = this.getGlobalSeq(priority);
+        long groupSeq = this.getCompanySeq(groupId, priority);
+        long sequence = Math.max(globalSeq, groupSeq) + 1L;
+        this.groupSequence.put(groupSequenceKey, sequence);
+        return sequence;
+    }
 
+    private long getCompanySeq(long groupId, long priority) {
+        String groupSequenceKey = this.getCompanySequenceKey(groupId, priority);
+        return (Long)ObjectUtils.defaultIfNull(ConvertUtils.toLong((Number) this.groupSequence.get(groupSequenceKey)), 1L);
+    }
+
+    private String getCompanySequenceKey(long groupId, long priority) {
         return null;
     }
 
     @Override
-    public Long getGlobalSeq(long var1) {
-        return null;
+    public Long getGlobalSeq(long priority) {
+        return (Long)ObjectUtils.defaultIfNull(ConvertUtils.toLong((Number) this.globalSequence.get(priority)), 1L);
     }
 }
