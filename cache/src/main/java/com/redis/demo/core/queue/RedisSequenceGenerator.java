@@ -5,6 +5,8 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
+import java.util.Arrays;
+
 public class RedisSequenceGenerator implements SequenceGenerator<Long>{
     private final BoundHashOperations<String, String, Long> groupSequence;
     private final BoundHashOperations<String, Long, Long> globalSequence;
@@ -13,11 +15,21 @@ public class RedisSequenceGenerator implements SequenceGenerator<Long>{
     private final String KEY_GLOBAL_SEQUENCE = "global-last-sequence";
     private final String KEY_GROUP_SEQUENCE = "group-last-sequence";
 
-    public RedisSequenceGenerator(RedisTemplate redisTemplate, String queueName) {
+    @SuppressWarnings("unchecked")
+    public RedisSequenceGenerator(String queueName, RedisTemplate redisTemplate) {
         this.queueName = queueName;
         this.globalSequence = redisTemplate.boundHashOps(this.parseKey(KEY_GLOBAL_SEQUENCE));
         this.groupSequence = redisTemplate.boundHashOps(this.parseKey(KEY_GROUP_SEQUENCE));
         this.redisTemplate = redisTemplate;
+    }
+
+    @SuppressWarnings("unchecked")
+    //just for test
+    public void resetAll(){
+        this.redisTemplate.delete(Arrays.asList(
+                this.parseKey(KEY_GROUP_SEQUENCE),
+                this.parseKey(KEY_GLOBAL_SEQUENCE)
+        ));
     }
 
     /**
@@ -51,11 +63,22 @@ public class RedisSequenceGenerator implements SequenceGenerator<Long>{
     }
 
     private String getCompanySequenceKey(long groupId, long priority) {
-        return null;
+        return groupId + "-" + priority;
     }
 
     @Override
     public Long getGlobalSeq(long priority) {
         return (Long)ObjectUtils.defaultIfNull(ConvertUtils.toLong((Number) this.globalSequence.get(priority)), 1L);
+    }
+
+    /**
+     * 反向更新全局序号
+     * @param priority 优先级
+     * @param seq 序号
+     */
+    @SuppressWarnings("unchecked")
+    public void transUpdateGlobalSequence(long priority, long seq){
+        this.globalSequence.put(priority, seq);
+//        this.redisTemplate.opsForHash().put(this.parseKey(KEY_GLOBAL_SEQUENCE), priority, seq);
     }
 }
