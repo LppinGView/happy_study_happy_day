@@ -23,17 +23,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c18ac102-9567-42b8-a64d-c732ba120dba" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/queue/RedisPriorityQueue.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/infrastructure/impl/queue/QueueUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/CollectionUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/CompareUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/Maps.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/NamedEnum.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/NullableStream.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/StreamUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/queue/RedisSequenceGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/queue/RedisSequenceGenerator.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/redis/demo/infrastructure/impl/queue/RedisProcessorQueueImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/infrastructure/impl/queue/RedisProcessorQueueImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -111,7 +101,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1618309497739</updated>
-      <workItem from="1618309500631" duration="18365000" />
+      <workItem from="1618309500631" duration="18853000" />
     </task>
     <servers />
   </component>

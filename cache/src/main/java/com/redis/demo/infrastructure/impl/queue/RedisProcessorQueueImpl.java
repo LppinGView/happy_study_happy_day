@@ -9,6 +9,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.Map;
 
+import static java.lang.Math.max;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -58,27 +60,41 @@ public class RedisProcessorQueueImpl implements ProcessorQueue<Long> {
     @Override
     public Long getForProcess() {
         Map.Entry<Long, Long> id = priorityQueue.getIdScopeForProcess();
+        if (isNull(id)){
+            return null;
+        }
 
-        return null;
+        final Long score = id.getValue();
+        long priority = QueueUtils.scoreToPriority(score);
+        long sequence = calcNextGlobalSequence(score);
+        sequenceGenerator.transUpdateGlobalSequence(priority, sequence);
+        return id.getKey();
+    }
+
+    public long calcNextGlobalSequence(long score){
+        long priority = QueueUtils.scoreToPriority(score);
+        long itemSequence = QueueUtils.scoreToSequence(score);
+        long globalSeq = sequenceGenerator.getGlobalSeq(priority);
+        return max(itemSequence, globalSeq);
     }
 
     @Override
     public void markProcessComplete(Long id) {
-
+        priorityQueue.markProcessComplete(id);
     }
 
     @Override
     public Long getQueueRank(Long id) {
-        return null;
+        return priorityQueue.getRank(id);
     }
 
     @Override
     public void rescheduleTimeoutItem(long timeoutValue) {
-
+        priorityQueue.rescheduleTimeoutItem(timeoutValue);
     }
 
     @Override
     public void delayExecuteTask(Long id, long nextExecuteTime) {
-
+        priorityQueue.setNextScheduleTime(id, nextExecuteTime);
     }
 }
