@@ -182,9 +182,9 @@ public final class ConvertUtils {
 //        return customSerializer.deepCopy(value);
 //    }
 //
-//    public static <T> Set<T> toSet(Iterable<T> nodes) {
-//        return (Set)StreamUtil.toStream(nodes).collect(Collectors.toSet());
-//    }
+    public static <T> Set<T> toSet(Iterable<T> nodes) {
+        return (Set)StreamUtil.toStream(nodes).collect(Collectors.toSet());
+    }
 //
 //    static {
 //        TYPEINFO_OBJECTMAPPER = (new ObjectMapper()).enableDefaultTyping(DefaultTyping.NON_FINAL, As.PROPERTY);

@@ -178,7 +178,7 @@ public class RedisPriorityQueue {
     }
 
     public synchronized void rescheduleTimeoutItem(long timeoutValue){
-        Set<Long> set = processingQueueMonitor.rangeByScore(Double.MIN_VALUE, timeoutValue);
+        Set<Long> set = processingQueueMonitor.rangeByScore(Double.MIN_VALUE, (double)(System.currentTimeMillis() + timeoutValue));
         toStream(set)
             .map(ConvertUtils::toLong)
             .filter(Objects::nonNull)

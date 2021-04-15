@@ -29,7 +29,7 @@ public class RedisProcessorQueueImpl implements ProcessorQueue<Long> {
     }
 
     //for test only
-    RedisProcessorQueueImpl resetAll(){
+    public RedisProcessorQueueImpl resetAll(){
         priorityQueue.resetAll();
         sequenceGenerator.resetAll();
         return this;
