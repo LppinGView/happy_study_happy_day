@@ -2,7 +2,6 @@ package com.redis.demo.utils;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -25,6 +24,18 @@ public class CollectionUtils {
             }
         }
         return defaultValue;
+    }
+
+    public static Iterable<Number> formatLong(Iterable<?> collection) {
+        if (collection != null) {
+            Iterator<?> iterator = collection.iterator();
+            Set<Number> newSet =new LinkedHashSet<>();
+            while (iterator.hasNext()){
+                newSet.add((Number) iterator.next());
+            }
+            return newSet;
+        }
+        return null;
     }
 
     public static <T> T firstOrDefault(T[] collection, T defaultValue) {

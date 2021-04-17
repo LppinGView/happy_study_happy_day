@@ -44,6 +44,10 @@ public final class ConvertUtils {
         return Objects.isNull(n) ? defaultValue : n.longValue();
     }
 
+    public static Number toNumber(Object number) {
+        return (Number) number;
+    }
+
     public static Long toLong(Number number) {
         return Objects.isNull(number) ? null : number.longValue();
     }

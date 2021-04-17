@@ -3,6 +3,7 @@ package com.redis.demo.core.queue;
 import com.redis.demo.utils.CollectionUtils;
 import com.redis.demo.utils.CompareUtils;
 import com.redis.demo.utils.ConvertUtils;
+import com.redis.demo.utils.StreamUtil;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.RandomUtils;
 import org.slf4j.Logger;
@@ -17,7 +18,9 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
+import static com.redis.demo.utils.CollectionUtils.formatLong;
 import static com.redis.demo.utils.Maps.entry;
 import static com.redis.demo.utils.StreamUtil.toStream;
 import static java.util.Objects.isNull;
@@ -182,19 +185,16 @@ public class RedisPriorityQueue {
      */
     public synchronized void rescheduleTimeoutItem(long timeoutValue){
         Set<Long> set = processingQueueMonitor.rangeByScore(Double.MIN_VALUE, (double)(System.currentTimeMillis() + timeoutValue));
-        toStream(set)
-            .map(ConvertUtils::toLong)
-            .filter(Objects::nonNull)
-            .forEach(id ->{
-                Double score = processingQueue.score(id);
-                if (isNull(score)){
-                    score = 0d;
-                }
-                processingQueueMonitor.add(id, -1);
-                processingQueue.remove(id);
-                priorityQueue.add(id, score);
-                processingQueueMonitor.removeRangeByScore(-1, -1);
-            });
+        StreamUtil.toStream(formatLong(set)).map(ConvertUtils::toLong).filter(Objects::nonNull).forEach(id ->{
+            Double score = processingQueue.score(id);
+            if (isNull(score)){
+                score = 0D;
+            }
+            processingQueueMonitor.add(id, -1D);
+            processingQueue.remove(id);
+            priorityQueue.add(id, score);
+            processingQueueMonitor.removeRangeByScore(-1D, -1D);
+        });
     }
 
     public synchronized void setNextScheduleTime(long id, long nextScheduleTime){
