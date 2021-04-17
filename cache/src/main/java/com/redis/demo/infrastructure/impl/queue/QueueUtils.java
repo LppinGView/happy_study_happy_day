@@ -41,5 +41,4 @@ public final class QueueUtils {
     public static long scoreToSequence(long score) {
         return score & 0x000F_FFff_ffff_ffffL;
     }
-
 }

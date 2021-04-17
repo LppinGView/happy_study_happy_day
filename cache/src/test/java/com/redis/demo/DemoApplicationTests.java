@@ -38,6 +38,7 @@ public class DemoApplicationTests {
     public void test_base_function(){
 
         final long id1 = 1L << 36;
+        final long id2 = 2L << 36;
 
         //测试重复入队请求
         testQueue.enqueue(new ProcessorQueueItem(id1, 3L << 38, PRIORITY_NORMAL));
@@ -63,8 +64,9 @@ public class DemoApplicationTests {
         assertThat(id, nullValue());
 
         testQueue.enqueue(new ProcessorQueueItem(id1, 5L << 38, PRIORITY_NORMAL));
+        testQueue.enqueue(new ProcessorQueueItem(id2, 3L << 38, PRIORITY_NORMAL));
         id = testQueue.getForProcess();
-        assertThat(id, equalTo(id1));
+        assertThat(id, equalTo(id2));
 
         testQueue.rescheduleTimeoutItem(10 * 60 * 1000L);
         id = testQueue.getForProcess();
