@@ -174,16 +174,26 @@ public class DemoApplicationTests {
         assertThat(testQueue.getForProcess(), equalTo(4L));
         assertThat(testQueue.getForProcess(), equalTo(5L));
         assertThat(testQueue.getForProcess(), equalTo(3L));
+        //queue=[]
+        //processing=[6,7,2,4,5,1,3]
+        //monitor=[6,7,2,4,5,1,3]
         testQueue.markProcessComplete(1L);
         testQueue.markProcessComplete(5L);
         testQueue.markProcessComplete(7L);
 
+        //processing=[6,2,4,3]
+        //monitor=[6,2,4,3]
+        //重复调度，会进行覆盖
         testQueue.rescheduleTimeoutItem(System.currentTimeMillis());
         testQueue.rescheduleTimeoutItem(System.currentTimeMillis());
         testQueue.rescheduleTimeoutItem(System.currentTimeMillis());
 
+        //queue=[6,2,4,3]
+        //processing=[]
+        //monitor=[]
         assertThat(testQueue.getQueueRank(3L), equalTo(3L));
         assertThat(testQueue.getQueueRank(2L), equalTo(1L));
+        assertThat(testQueue.getQueueRank(6L), equalTo(0L));
 
         assertThat(testQueue.getForProcess(), equalTo(6L));
         assertThat(testQueue.getForProcess(), equalTo(2L));

@@ -26,7 +26,12 @@ public class CollectionUtils {
         return defaultValue;
     }
 
-    public static Iterable<Number> formatLong(Iterable<?> collection) {
+    /**
+     * 将Set<Long> -> Set<Number>
+     * @param collection
+     * @return
+     */
+    public static Iterable<Number> formatNumber(Iterable<?> collection) {
         if (collection != null) {
             Iterator<?> iterator = collection.iterator();
             Set<Number> newSet =new LinkedHashSet<>();

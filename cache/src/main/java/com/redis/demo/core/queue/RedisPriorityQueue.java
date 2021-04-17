@@ -18,11 +18,8 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import static com.redis.demo.utils.CollectionUtils.formatLong;
+import static com.redis.demo.utils.CollectionUtils.formatNumber;
 import static com.redis.demo.utils.Maps.entry;
-import static com.redis.demo.utils.StreamUtil.toStream;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
@@ -126,6 +123,11 @@ public class RedisPriorityQueue {
         this.processingQueue.remove(new Object[]{id});
     }
 
+    /**
+     * Determine the index of element with value in a sorted set.
+     * @param id
+     * @return
+     */
     public Long getRank(long id){
         Long rank = this.priorityQueue.rank(id);
         if (Objects.nonNull(rank)){
@@ -185,7 +187,7 @@ public class RedisPriorityQueue {
      */
     public synchronized void rescheduleTimeoutItem(long timeoutValue){
         Set<Long> set = processingQueueMonitor.rangeByScore(Double.MIN_VALUE, (double)(System.currentTimeMillis() + timeoutValue));
-        StreamUtil.toStream(formatLong(set)).map(ConvertUtils::toLong).filter(Objects::nonNull).forEach(id ->{
+        StreamUtil.toStream(formatNumber(set)).map(ConvertUtils::toLong).filter(Objects::nonNull).forEach(id ->{
             Double score = processingQueue.score(id);
             if (isNull(score)){
                 score = 0D;

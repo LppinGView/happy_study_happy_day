@@ -25,8 +25,8 @@
     <list default="true" id="c18ac102-9567-42b8-a64d-c732ba120dba" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/queue/RedisPriorityQueue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/queue/RedisPriorityQueue.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/redis/demo/domain/service/queue/ProcessorQueue.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/domain/service/queue/ProcessorQueue.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/CollectionUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/CollectionUtils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/ConvertUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/ConvertUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/com/redis/demo/DemoApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/redis/demo/DemoApplicationTests.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -199,7 +199,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1618309497739</updated>
-      <workItem from="1618309500631" duration="51394000" />
+      <workItem from="1618309500631" duration="53931000" />
     </task>
     <servers />
   </component>
@@ -226,46 +226,46 @@
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
     <state x="768" y="300" width="374" height="633" key="#com.intellij.ide.util.MemberChooser/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618383703208" />
-    <state width="583" height="506" key="DebuggerActiveHint" timestamp="1618648503853">
+    <state width="583" height="506" key="DebuggerActiveHint" timestamp="1618651346778">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
-    <state width="583" height="506" key="DebuggerActiveHint/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618648503853" />
+    <state width="583" height="506" key="DebuggerActiveHint/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618651346778" />
     <state x="743" y="374" width="424" height="491" key="FileChooserDialogImpl" timestamp="1618388042946">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
     <state x="743" y="374" width="424" height="491" key="FileChooserDialogImpl/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618388042946" />
-    <state width="1874" height="294" key="GridCell.Tab.0.bottom" timestamp="1618650912524">
+    <state width="1874" height="178" key="GridCell.Tab.0.bottom" timestamp="1618654497579">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
-    <state width="1874" height="294" key="GridCell.Tab.0.bottom/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618650912524" />
-    <state width="1874" height="294" key="GridCell.Tab.0.center" timestamp="1618650912524">
+    <state width="1874" height="178" key="GridCell.Tab.0.bottom/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618654497579" />
+    <state width="1874" height="178" key="GridCell.Tab.0.center" timestamp="1618654497579">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
-    <state width="1874" height="294" key="GridCell.Tab.0.center/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618650912524" />
-    <state width="1874" height="294" key="GridCell.Tab.0.left" timestamp="1618650912524">
+    <state width="1874" height="178" key="GridCell.Tab.0.center/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618654497579" />
+    <state width="1874" height="178" key="GridCell.Tab.0.left" timestamp="1618654497579">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
-    <state width="1874" height="294" key="GridCell.Tab.0.left/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618650912524" />
-    <state width="1874" height="294" key="GridCell.Tab.0.right" timestamp="1618650912524">
+    <state width="1874" height="178" key="GridCell.Tab.0.left/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618654497579" />
+    <state width="1874" height="178" key="GridCell.Tab.0.right" timestamp="1618654497579">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
-    <state width="1874" height="294" key="GridCell.Tab.0.right/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618650912524" />
-    <state width="1874" height="190" key="GridCell.Tab.1.bottom" timestamp="1618650842418">
+    <state width="1874" height="178" key="GridCell.Tab.0.right/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618654497579" />
+    <state width="1874" height="396" key="GridCell.Tab.1.bottom" timestamp="1618651355540">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
-    <state width="1874" height="190" key="GridCell.Tab.1.bottom/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618650842418" />
-    <state width="1874" height="190" key="GridCell.Tab.1.center" timestamp="1618650842417">
+    <state width="1874" height="396" key="GridCell.Tab.1.bottom/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618651355540" />
+    <state width="1874" height="396" key="GridCell.Tab.1.center" timestamp="1618651355539">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
-    <state width="1874" height="190" key="GridCell.Tab.1.center/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618650842417" />
-    <state width="1874" height="190" key="GridCell.Tab.1.left" timestamp="1618650842417">
+    <state width="1874" height="396" key="GridCell.Tab.1.center/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618651355539" />
+    <state width="1874" height="396" key="GridCell.Tab.1.left" timestamp="1618651355539">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
-    <state width="1874" height="190" key="GridCell.Tab.1.left/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618650842417" />
-    <state width="1874" height="190" key="GridCell.Tab.1.right" timestamp="1618650842417">
+    <state width="1874" height="396" key="GridCell.Tab.1.left/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618651355539" />
+    <state width="1874" height="396" key="GridCell.Tab.1.right" timestamp="1618651355540">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
-    <state width="1874" height="190" key="GridCell.Tab.1.right/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618650842417" />
+    <state width="1874" height="396" key="GridCell.Tab.1.right/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618651355540" />
     <state x="449" y="248" width="1022" height="737" key="SettingsEditor" timestamp="1618309637175">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
@@ -282,6 +282,10 @@
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
     <state x="651" y="323" width="618" height="580" key="find.popup/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618649067538" />
+    <state x="624" y="282" key="run.anything.popup" timestamp="1618654887296">
+      <screen x="0" y="27" width="1920" height="1173" />
+    </state>
+    <state x="624" y="282" key="run.anything.popup/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618654887296" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -292,34 +296,19 @@
           <option name="timeStamp" value="32" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>jar://$MAVEN_REPOSITORY$/org/springframework/data/spring-data-redis/2.4.6/spring-data-redis-2.4.6.jar!/org/springframework/data/redis/serializer/SerializationUtils.class</url>
-          <line>34</line>
-          <option name="timeStamp" value="45" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/redis/demo/core/queue/RedisPriorityQueue.java</url>
-          <line>186</line>
-          <option name="timeStamp" value="47" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/com/redis/demo/DemoApplicationTests.java</url>
-          <line>180</line>
+          <line>186</line>
           <option name="timeStamp" value="48" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>jar://$MAVEN_REPOSITORY$/org/springframework/data/spring-data-redis/2.4.6/spring-data-redis-2.4.6.jar!/org/springframework/data/redis/serializer/Jackson2JsonRedisSerializer.class</url>
-          <line>29</line>
-          <option name="timeStamp" value="49" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-databind/2.11.4/jackson-databind-2.11.4.jar!/com/fasterxml/jackson/databind/ObjectMapper.class</url>
-          <line>1447</line>
-          <option name="timeStamp" value="50" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>jar://$MAVEN_REPOSITORY$/com/fasterxml/jackson/core/jackson-databind/2.11.4/jackson-databind-2.11.4.jar!/com/fasterxml/jackson/databind/ObjectMapper.class</url>
           <line>1852</line>
           <option name="timeStamp" value="51" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/redis/demo/core/queue/RedisPriorityQueue.java</url>
+          <line>131</line>
+          <option name="timeStamp" value="53" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

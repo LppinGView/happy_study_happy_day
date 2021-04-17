@@ -11,6 +11,7 @@ public interface ProcessorQueue<T> {
     void markProcessComplete(T id);
 
     /**
+     * Determine the index of element with value in a sorted set.
      * @param id id in queue
      * @return null: not in queue
      * -1: processing
