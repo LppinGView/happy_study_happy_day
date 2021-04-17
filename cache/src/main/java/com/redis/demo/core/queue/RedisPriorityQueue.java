@@ -1,6 +1,5 @@
 package com.redis.demo.core.queue;
 
-import ch.qos.logback.core.util.TimeUtil;
 import com.redis.demo.utils.CollectionUtils;
 import com.redis.demo.utils.CompareUtils;
 import com.redis.demo.utils.ConvertUtils;
@@ -13,7 +12,6 @@ import org.springframework.data.redis.connection.RedisZSetCommands.Range;
 import org.springframework.data.redis.core.BoundZSetOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 
-import java.sql.Time;
 import java.util.Arrays;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -136,15 +134,15 @@ public class RedisPriorityQueue {
     }
 
     /**
-     * 将待处理事务从优先级队列移除，同时放进process队列和监控队列
+     * 将待处理事务从优先级队列移除，同时放进processing队列和监控队列
      * @param id
      * @param sorce
      * @return true,表示移除成功
      */
     public boolean transGetIdForProcess(Long id, Long sorce){
         log.debug("transGetIdForProcess, {}, {}", id, sorce);
-        this.processingQueue.add(id, (double)sorce);
-        this.processingQueueMonitor.add(id, (double)(System.currentTimeMillis() + this.processTimeOutInMillSecond));
+        this.processingQueue.add(id, sorce);
+        this.processingQueueMonitor.add(id, System.currentTimeMillis() + this.processTimeOutInMillSecond);
         Long removeResult = this.priorityQueue.remove(new Object[]{id});
         return CompareUtils.areEquals(1L, removeResult);
     }
@@ -177,6 +175,11 @@ public class RedisPriorityQueue {
         rescheduleTimeoutItem(System.currentTimeMillis());
     }
 
+    /**
+     * 对某个时间段内的任务再次调度 进行处理
+     * 将监控队列中的任务，score置为-1，同时将其移除处理队里，再将其加入到优先级队列中，同时移除监控队列score=-1的任务
+     * @param timeoutValue
+     */
     public synchronized void rescheduleTimeoutItem(long timeoutValue){
         Set<Long> set = processingQueueMonitor.rangeByScore(Double.MIN_VALUE, (double)(System.currentTimeMillis() + timeoutValue));
         toStream(set)

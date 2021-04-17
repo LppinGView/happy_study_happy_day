@@ -35,6 +35,11 @@ public class RedisProcessorQueueImpl implements ProcessorQueue<Long> {
         return this;
     }
 
+    /**
+     * 入队
+     * 计算出任务的优先级序号，序号存入组序列hash中，并将任务存入到优先级队列中
+     * @param item
+     */
     @Override
     public void enqueue(ProcessorQueueItem item) {
         final long id = item.getId();
@@ -54,7 +59,8 @@ public class RedisProcessorQueueImpl implements ProcessorQueue<Long> {
     }
 
     /**
-     * 从队列中获取优先级最高的进行处理，同时将其移除队列，并加入处理队列和监控队列
+     * 从队列中获取优先级最高的进行处理，同时将其移除优先级队列，并加入处理队列和监控队列
+     * 同时更新全局优先级序列号
      * @return
      */
     @Override

@@ -68,8 +68,10 @@ public class DemoApplicationTests {
         id = testQueue.getForProcess();
         assertThat(id, equalTo(id2));
 
-        testQueue.rescheduleTimeoutItem(10 * 60 * 1000L);
         id = testQueue.getForProcess();
+        assertThat(id, equalTo(id1));
+
+        testQueue.rescheduleTimeoutItem(10 * 60 * 1000L);
         assertThat(id, equalTo(id1));
         testQueue.markProcessComplete(id);
     }
