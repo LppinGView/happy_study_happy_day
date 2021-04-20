@@ -23,12 +23,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c18ac102-9567-42b8-a64d-c732ba120dba" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DefaultDomainEventReceiver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/ThreadUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/config/PulsarDomainEventReceiverConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/ddd/DomainEventBase.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/ddd/DomainEventListener.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/exceptions/ApiException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/exceptions/ArgumentCheckFailException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/exceptions/UserExceptionMessage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/ImpureUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/test/java/com/redis/demo/DomainEventBaseTest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DefaultDomainEventClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DefaultDomainEventClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DomainEventReceiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DomainEventReceiver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/ConvertUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/ConvertUtils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +74,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/com/redis/demo/utils" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/test/java/com/redis/demo" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="MavenSettings" />
     <property name="vue.rearranger.settings.migration" value="true" />
@@ -80,17 +84,18 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.redis.demo.utils" />
-      <recent name="com.redis.demo.config" />
       <recent name="com.redis.demo.ddd" />
+      <recent name="com.redis.demo.utils" />
+      <recent name="com.redis.demo.exceptions" />
+      <recent name="com.redis.demo.config" />
       <recent name="com.redis.demo.core.event" />
-      <recent name="com.redis.demo.core.stream" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/java/com/redis/demo" />
       <recent name="$PROJECT_DIR$/src/main/java/com/redis/demo/utils" />
     </key>
   </component>
-  <component name="RunManager" selected="JUnit.DemoApplicationTests.test_priority_withManyCompany2">
+  <component name="RunManager" selected="JUnit.DomainEventBaseTest.builderTest">
     <configuration name="QueueUtils" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.redis.demo.infrastructure.impl.queue.QueueUtils" />
       <module name="cache" />
@@ -110,21 +115,6 @@
           <option name="containerStateName" value="" />
         </value>
       </option>
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="DemoApplicationTests (2)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="cache" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.redis.demo.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.redis.demo" />
-      <option name="MAIN_CLASS_NAME" value="com.redis.demo.DemoApplicationTests" />
       <option name="TEST_OBJECT" value="class" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -178,6 +168,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="DomainEventBaseTest.builderTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="cache" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.redis.demo.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.redis.demo" />
+      <option name="MAIN_CLASS_NAME" value="com.redis.demo.DomainEventBaseTest" />
+      <option name="METHOD_NAME" value="builderTest" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="DemoApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="cache" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.redis.demo.DemoApplication" />
@@ -187,11 +193,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JUnit.DomainEventBaseTest.builderTest" />
         <item itemvalue="JUnit.DemoApplicationTests.test_priority_withManyCompany2" />
         <item itemvalue="JUnit.DemoApplicationTests.test_priority_withManyCompany" />
         <item itemvalue="JUnit.DemoApplicationTests.test_base_function" />
         <item itemvalue="Application.QueueUtils" />
-        <item itemvalue="JUnit.DemoApplicationTests (2)" />
       </list>
     </recent_temporary>
   </component>
@@ -203,7 +209,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1618309497739</updated>
-      <workItem from="1618309500631" duration="77226000" />
+      <workItem from="1618309500631" duration="79719000" />
     </task>
     <servers />
   </component>
@@ -226,10 +232,10 @@
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
     <state x="100" y="127" width="1720" height="973" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618644784794" />
-    <state x="768" y="300" width="374" height="633" key="#com.intellij.ide.util.MemberChooser" timestamp="1618908183562">
+    <state x="768" y="300" width="374" height="633" key="#com.intellij.ide.util.MemberChooser" timestamp="1618913320034">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
-    <state x="768" y="300" width="374" height="633" key="#com.intellij.ide.util.MemberChooser/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618908183562" />
+    <state x="768" y="300" width="374" height="633" key="#com.intellij.ide.util.MemberChooser/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618913320034" />
     <state x="693" y="362" width="524" height="509" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1618657326908">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
