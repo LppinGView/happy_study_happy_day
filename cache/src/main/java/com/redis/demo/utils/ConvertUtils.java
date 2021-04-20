@@ -1,23 +1,34 @@
 package com.redis.demo.utils;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.*;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.ResolvableType;
-
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.fasterxml.jackson.core.JsonParser.Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER;
+import static java.util.Collections.singletonList;
+import static org.apache.commons.lang3.Validate.notNull;
+import static org.springframework.core.ResolvableType.forClassWithGenerics;
+
 public final class ConvertUtils {
     private static final Logger log = LoggerFactory.getLogger(ConvertUtils.class);
-//    private static final Class<Map<String, Object>> MAP_TYPE = (Class)Validate.notNull(ResolvableType.forClassWithGenerics(Map.class, new Class[]{String.class, Object.class}).resolve());
-//    private static final List<Module> registerModules = new ArrayList(Collections.singletonList(new NamedEnumModule()));
-//    private static ObjectMapper OBJECTMAPPER = BeanObjectMapper.create((m) -> {
-//        OBJECTMAPPER = applyModules(m);
-//    });
-//    private static ObjectMapper TYPEINFO_OBJECTMAPPER;
-//    private static final CustomSerializer customSerializer;
+    @SuppressWarnings("unchecked")
+    private static final Class<Map<String, Object>> MAP_TYPE = (Class<Map<String, Object>>)
+            notNull(forClassWithGenerics(Map.class, String.class, Object.class).resolve());
+
+    //region register modules
+    private static final List<Module> registerModules = new ArrayList<>(singletonList(new NamedEnumModule()));
+
+    private static ObjectMapper OBJECTMAPPER = BeanObjectMapper.create(m -> ConvertUtils.OBJECTMAPPER = applyModules(m));
+    private static ObjectMapper TYPEINFO_OBJECTMAPPER = new ObjectMapper()
+            .enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
 
     public ConvertUtils() {
     }
@@ -92,11 +103,17 @@ public final class ConvertUtils {
 //        }
 //    }
 //
-//    private static ObjectMapper applyModules(ObjectMapper mapper) {
-//        registerModules.forEach(mapper::registerModule);
-//        mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS).enable(new MapperFeature[]{MapperFeature.PROPAGATE_TRANSIENT_MARKER}).enable(new Feature[]{Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER}).disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-//        return mapper;
-//    }
+    private static ObjectMapper applyModules(ObjectMapper mapper) {
+        registerModules.forEach(mapper::registerModule);
+        mapper
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .enable(MapperFeature.PROPAGATE_TRANSIENT_MARKER)
+                .enable(ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER)
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+        ;
+
+        return mapper;
+    }
 //
 //    public static JsonNode toJsonNode(@Language("JSON") String json) {
 //        try {
@@ -125,6 +142,10 @@ public final class ConvertUtils {
 //            throw var2;
 //        }
 //    }
+    @SneakyThrows(JsonProcessingException.class)
+    public static String toJsonString(Object object) {
+        return OBJECTMAPPER.writeValueAsString(object);
+    }
 //
 //    public static Map<String, Object> jsonToMap(String json) {
 //        try {

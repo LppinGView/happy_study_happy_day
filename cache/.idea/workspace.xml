@@ -23,11 +23,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c18ac102-9567-42b8-a64d-c732ba120dba" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DomainEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DomainEventSender.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/stream/Action.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/ExceptionUtil.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/config/PulsarDomainEventSenderConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/Consts.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DefaultDomainEventClient.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DefaultDomainEventSender.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DomainEventReceiver.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DomainEventWrapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/ddd/AggregateRoot.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/ddd/AggregateRootHelper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/ddd/DelayDomainEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/ddd/DomainAggregateRootName.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/ddd/Entity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/ddd/TimeDeliverDomainEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/BeanObjectMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/JacksonAnnotationUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/NamedEnumDeserializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/NamedEnumFormat.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/NamedEnumMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/NamedEnumModule.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/NamedEnumSerializer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/NamedEnumUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/ConvertUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/ConvertUtils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +87,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/projects/src/git.yuxiaor.com/yuxiaor/yuxiaor-pms-web" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/java/com/redis/demo/utils" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="MavenSettings" />
     <property name="vue.rearranger.settings.migration" value="true" />
@@ -79,11 +97,14 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="com.redis.demo.core.stream" />
-      <recent name="com.redis.demo.utils" />
-      <recent name="com.redis.demo.core.event" />
       <recent name="com.redis.demo.config" />
-      <recent name="com.redis.demo.core.queue" />
+      <recent name="com.redis.demo.ddd" />
+      <recent name="com.redis.demo.core.event" />
+      <recent name="com.redis.demo.utils" />
+      <recent name="com.redis.demo.core.stream" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/java/com/redis/demo/utils" />
     </key>
   </component>
   <component name="RunManager" selected="JUnit.DemoApplicationTests.test_priority_withManyCompany2">
@@ -199,7 +220,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1618309497739</updated>
-      <workItem from="1618309500631" duration="57865000" />
+      <workItem from="1618309500631" duration="72196000" />
     </task>
     <servers />
   </component>
@@ -222,10 +243,10 @@
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
     <state x="100" y="127" width="1720" height="973" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618644784794" />
-    <state x="768" y="300" width="374" height="633" key="#com.intellij.ide.util.MemberChooser" timestamp="1618383703208">
+    <state x="768" y="300" width="374" height="633" key="#com.intellij.ide.util.MemberChooser" timestamp="1618901951188">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
-    <state x="768" y="300" width="374" height="633" key="#com.intellij.ide.util.MemberChooser/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618383703208" />
+    <state x="768" y="300" width="374" height="633" key="#com.intellij.ide.util.MemberChooser/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618901951188" />
     <state x="693" y="362" width="524" height="509" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1618657326908">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
@@ -282,18 +303,18 @@
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
     <state x="462" y="205" width="986" height="823" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618310657511" />
-    <state x="651" y="323" width="618" height="580" key="find.popup" timestamp="1618649067538">
+    <state x="651" y="323" width="618" height="580" key="find.popup" timestamp="1618900815827">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
-    <state x="651" y="323" width="618" height="580" key="find.popup/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618649067538" />
+    <state x="651" y="323" width="618" height="580" key="find.popup/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618900815827" />
     <state x="624" y="282" key="run.anything.popup" timestamp="1618654887296">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
     <state x="624" y="282" key="run.anything.popup/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618654887296" />
-    <state x="623" y="289" width="672" height="678" key="search.everywhere.popup" timestamp="1618657224671">
+    <state x="623" y="289" width="672" height="678" key="search.everywhere.popup" timestamp="1618907460261">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
-    <state x="623" y="289" width="672" height="678" key="search.everywhere.popup/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618657224671" />
+    <state x="623" y="289" width="672" height="678" key="search.everywhere.popup/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618907460261" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
