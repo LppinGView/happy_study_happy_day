@@ -23,28 +23,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c18ac102-9567-42b8-a64d-c732ba120dba" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/config/PulsarDomainEventSenderConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/Consts.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DefaultDomainEventClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DefaultDomainEventSender.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DomainEventReceiver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DomainEventWrapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/ddd/AggregateRoot.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/ddd/AggregateRootHelper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/ddd/DelayDomainEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/ddd/DomainAggregateRootName.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/ddd/Entity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/ddd/TimeDeliverDomainEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/BeanObjectMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/JacksonAnnotationUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/NamedEnumDeserializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/NamedEnumFormat.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/NamedEnumMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/NamedEnumModule.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/NamedEnumSerializer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/NamedEnumUtils.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DefaultDomainEventReceiver.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/ThreadUtils.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DefaultDomainEventClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DefaultDomainEventClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DomainEventReceiver.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/core/event/DomainEventReceiver.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/ConvertUtils.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/redis/demo/utils/ConvertUtils.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -56,8 +39,8 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="spring-beans.schema" />
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -97,10 +80,10 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.redis.demo.utils" />
       <recent name="com.redis.demo.config" />
       <recent name="com.redis.demo.ddd" />
       <recent name="com.redis.demo.core.event" />
-      <recent name="com.redis.demo.utils" />
       <recent name="com.redis.demo.core.stream" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
@@ -220,7 +203,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1618309497739</updated>
-      <workItem from="1618309500631" duration="72196000" />
+      <workItem from="1618309500631" duration="77226000" />
     </task>
     <servers />
   </component>
@@ -243,10 +226,10 @@
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
     <state x="100" y="127" width="1720" height="973" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618644784794" />
-    <state x="768" y="300" width="374" height="633" key="#com.intellij.ide.util.MemberChooser" timestamp="1618901951188">
+    <state x="768" y="300" width="374" height="633" key="#com.intellij.ide.util.MemberChooser" timestamp="1618908183562">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>
-    <state x="768" y="300" width="374" height="633" key="#com.intellij.ide.util.MemberChooser/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618901951188" />
+    <state x="768" y="300" width="374" height="633" key="#com.intellij.ide.util.MemberChooser/0.27.1920.1173/1920.0.1080.1920@0.27.1920.1173" timestamp="1618908183562" />
     <state x="693" y="362" width="524" height="509" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog" timestamp="1618657326908">
       <screen x="0" y="27" width="1920" height="1173" />
     </state>

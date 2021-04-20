@@ -7,6 +7,10 @@ import org.apache.pulsar.client.api.PulsarClient;
 
 import static com.redis.demo.utils.ExceptionUtil.sneakyInvoke;
 
+/**
+ * 针对pulsar来说，broker是服务端，生成者和消费者都是客户端
+ */
+
 public class DefaultDomainEventClient {
     @Getter
     private final PulsarClient pulsarClient;

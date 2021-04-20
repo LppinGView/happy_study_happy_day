@@ -6,8 +6,11 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.*;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -154,15 +157,12 @@ public final class ConvertUtils {
 //            throw var2;
 //        }
 //    }
-//
-//    public static <T> T jsonToObject(String json, Class<T> klass) {
-//        try {
-//            return StringUtils.isBlank(json) ? null : OBJECTMAPPER.readValue(json, klass);
-//        } catch (IOException var3) {
-//            throw var3;
-//        }
-//    }
-//
+
+    @SneakyThrows(IOException.class)
+    public static <T> T jsonToObject(String json, Class<T> klass) {
+        return StringUtils.isBlank(json) ? null : OBJECTMAPPER.readValue(json, klass);
+    }
+
 //    public static <T> T jsonWithTypeInfoToObject(String json) {
 //        try {
 //            return StringUtils.isBlank(json) ? null : TYPEINFO_OBJECTMAPPER.readValue(json, Object.class);
@@ -178,14 +178,11 @@ public final class ConvertUtils {
 //            throw var3;
 //        }
 //    }
-//
-//    public static <T> T jsonToObject(JsonNode json, Class<T> klass) {
-//        try {
-//            return Objects.isNull(json) ? null : OBJECTMAPPER.treeToValue(json, klass);
-//        } catch (IOException var3) {
-//            throw var3;
-//        }
-//    }
+
+    @SneakyThrows(IOException.class)
+    public static <T> T jsonToObject(JsonNode json, Class<T> klass) {
+        return Objects.isNull(json) ? null : OBJECTMAPPER.treeToValue(json, klass);
+    }
 //
 //    @NotNull
 //    public static List<String> splitToList(String str, char splitChar) {

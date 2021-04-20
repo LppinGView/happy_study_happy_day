@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
+import static com.redis.demo.utils.ConvertUtils.jsonToObject;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -28,6 +29,8 @@ public interface DomainEventReceiver {
     default EventSubscriber subscriber(String serviceName, String subscribeName) {
         return new EventSubscriber(serviceName, serviceName, this);
     }
+
+    EventSubscriber subscriber(String subscribeName);
 
     class DomainEventMessage {
         private final static Pattern SOURCE = Pattern.compile("\\.[^.]+$");
@@ -93,7 +96,7 @@ public interface DomainEventReceiver {
         }
 
         public boolean isType(Pattern pattern){
-            if (isNull(pattern){
+            if (isNull(pattern)){
                 return false;
             }
             return pattern.matcher(type).matches();
@@ -158,6 +161,17 @@ public interface DomainEventReceiver {
                 event = jsonToObject(getMsgStr(), DomainEvent.class);
             }
             return (T) event;
+        }
+
+        public <T> T getEvent(Class<T> cls) {
+            return jsonToObject(getMsgStr(), cls);
+        }
+
+        public String getDebugMeta() {
+            if (retryIndex > 0) {
+                return String.format("retry-%d,key=%s, domainName=%s", retryIndex, key, domainName);
+            }
+            return String.format("key=%s, domainName=%s", key, domainName);
         }
     }
 
