@@ -1,10 +1,13 @@
-package com.lpp.demo.socket;
+package com.lpp.demo.scalable;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URLDecoder;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
 import java.util.concurrent.CountDownLatch;
 
 public class SocketClient{
@@ -24,7 +27,6 @@ public class SocketClient{
         }
     }
 }
-
 
 
 /**
@@ -54,32 +56,36 @@ class ClientRequestThread implements Runnable {
 
     @Override
     public void run() {
-        Socket socket = null;
-        OutputStream clientRequest = null;
-        InputStream clientResponse = null;
+        SocketChannel socketChannel = null;
+        ByteBuffer buffer = ByteBuffer.allocate(100);
 
         try {
-            socket = new Socket("localhost",9999);
-            clientRequest = socket.getOutputStream();
-            clientResponse = socket.getInputStream();
+            socketChannel = SocketChannel.open();
+            socketChannel.socket().connect(new InetSocketAddress(9999));
 
             //等待，直到SocketClientDaemon完成所有线程的启动，然后所有线程一起发送请求
             this.countDownLatch.await();
 
+            buffer.clear();
+            buffer.put(("这是第" + this.clientIndex + " 个客户端的请求。 over").getBytes());
+            buffer.flip();
             //发送请求信息
-            clientRequest.write(("这是第" + this.clientIndex + " 个客户端的请求。 over").getBytes());
-            clientRequest.flush();
+            socketChannel.write(buffer);
 
             //在这里等待，直到服务器返回信息
             System.out.println("第" + this.clientIndex + "个客户端的请求发送完成，等待服务器返回信息");
-            int maxLen = 1024;
-            byte[] contextBytes = new byte[maxLen];
+
+            buffer.clear();
             int realLen;
             StringBuilder message = new StringBuilder();
+            socketChannel.read(buffer);
             //程序执行到这里，会一直等待服务器返回信息（注意，前提是in和out都不能close，如果close了就收不到服务器的反馈了）
-            while((realLen = clientResponse.read(contextBytes, 0, maxLen)) != -1) {
-                message.append(new String(contextBytes, 0, realLen));
+            while(buffer.position() > 0 ){
+                realLen = buffer.limit() - buffer.position();
+                message.append(new String(buffer.array(), 0, realLen));
+                buffer.clear();
             }
+
             //String messageEncode = new String(message , "UTF-8");
             message = new StringBuilder(URLDecoder.decode(message.toString(), "UTF-8"));
             System.out.println("第" + this.clientIndex + "个客户端接收到来自服务器的信息:" + message);
@@ -87,11 +93,8 @@ class ClientRequestThread implements Runnable {
 
         } finally {
             try {
-                if(clientRequest != null) {
-                    clientRequest.close();
-                }
-                if(clientResponse != null) {
-                    clientResponse.close();
+                if (socketChannel != null) {
+                    socketChannel.close();
                 }
             } catch (IOException e) {
 

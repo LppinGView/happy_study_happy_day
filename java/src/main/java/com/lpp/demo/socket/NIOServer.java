@@ -35,7 +35,7 @@ public class NIOServer {
         //2. 切换非阻塞模式
         ssChannel.configureBlocking(false);
         //3. 绑定连接
-        ssChannel.bind(new InetSocketAddress(9898));
+        ssChannel.bind(new InetSocketAddress(9999));
         //4. 获取选择器
         Selector selector = Selector.open();
         //5. 将通道注册到选择器上, 并且指定“监听接收事件”
@@ -92,7 +92,7 @@ class Client {
     //客户端
     public static void main(String[] args) throws IOException {
         //1. 获取通道
-        SocketChannel sChannel = SocketChannel.open(new InetSocketAddress("127.0.0.1", 9898));
+        SocketChannel sChannel = SocketChannel.open(new InetSocketAddress("127.0.0.1", 9999));
         //2. 切换非阻塞模式
         sChannel.configureBlocking(false);
         //3. 分配指定大小的缓冲区
