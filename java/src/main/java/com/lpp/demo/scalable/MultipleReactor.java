@@ -11,53 +11,32 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- * 1.Reactor responds to IO events by dispatching the appropriate handler
- * 2.Handlers perform non-blocking actions
- * 3.Manage by binding handlers to events
- *
- * java NIO 的支持
- * 1.Channels：Connections to files, sockets etc that support non-blocking reads
- * 2.Buffers：Array-like objects that can be directly read or written by Channels
- * 3.Selectors：Tell which of a set of Channels have IO events
- * 4.SelectionKeys：Maintain IO event status and bindings
- *
- *
- * 多线程设计
- * 主要应对多核cpu，能够充分利用机器性能
- *
- * 分：工作线程、反应器线程
- *  1.工作线程：
- *      反应器应该快速触发处理器（由于是单线程，处理器处理过程减缓了反应器）
- *      将非IO处理卸载到其他线程（加快处理器处理过程）
- *
- *  2.反应器线程：
- *      在处理IO时，反应器线程工作要饱和
- *      能够将负载分配给其他反应器（负载平衡以匹配CPU和IO速率，不同机器分配不同请求量）
- *
- *
- */
-public class Reactor implements Runnable {
+public class MultipleReactor implements Runnable {
 
-    //subReactors集合, 一个selector代表一个subReactor
-    final Selector[] selectors = new Selector[2];
-    int next = 0;
+    final Selector selector;
+
+    final static Selector[] subSelectors = new Selector[2];
+    static int next = 0;
 
     final ServerSocketChannel serverSocket;
     final int MAXIN = 100;
     final int MAXOUT = 100;
 
     //1.setup
-    public Reactor(int port) throws IOException {
-        selectors[0] = Selector.open(); //开启选择器
-        selectors[1] = Selector.open();
+    public MultipleReactor(int port) throws IOException {
+        selector = Selector.open(); //开启选择器
+        subSelectors[0] = Selector.open(); //开启选择器
+        subSelectors[1] = Selector.open(); //开启选择器
         serverSocket = ServerSocketChannel.open();
         serverSocket.socket().bind(new InetSocketAddress(port));
         serverSocket.configureBlocking(false);
-        SelectionKey sk = serverSocket.register(selectors[0], SelectionKey.OP_ACCEPT); //main reactor负责监听accept请求
+        SelectionKey sk = serverSocket.register(selector, SelectionKey.OP_ACCEPT); //main reactor负责监听accept请求
         sk.attach(new Acceptor()); //装载附件，获取可以通过attachment获取，这里也类似注册
     }
 
@@ -67,19 +46,14 @@ public class Reactor implements Runnable {
         try {
             System.out.println("reactor starting");
             while (!Thread.interrupted()) {
-
-                for (int i = 0; i<2; i++) {
-
-                    //Selects a set of keys whose corresponding channels are ready for I/O operations.
-                    selectors[i].select();
-                    Set<SelectionKey> selected = selectors[i].selectedKeys();
-                    Iterator<SelectionKey> it = selected.iterator();
-                    while (it.hasNext()) {
-                        dispatch(it.next());
-                    }
-//                selected.clear();
-
+                //Selects a set of keys whose corresponding channels are ready for I/O operations.
+                selector.select();
+                Set<SelectionKey> selected = selector.selectedKeys();
+                Iterator<SelectionKey> it = selected.iterator();
+                while (it.hasNext()) {
+                    dispatch(it.next());
                 }
+//                selected.clear();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -105,9 +79,9 @@ public class Reactor implements Runnable {
             try {
                 SocketChannel c = serverSocket.accept();
                 if (c != null) {
-                    new Handler(selectors[next], c);
+                    new Handler(subSelectors[next], c);
                 }
-                if (++next == selectors.length) {
+                if (++next == subSelectors.length) {
                     next = 0;
                 }
             } catch (IOException e) {
@@ -116,12 +90,48 @@ public class Reactor implements Runnable {
         }
     }
 
+    static class SubReactor implements Runnable {
+
+        public SubReactor() throws IOException {
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (!Thread.interrupted()) {
+
+//                  for (int i = 0; i<2; i++) {
+                    //Selects a set of keys whose corresponding channels are ready for I/O operations.
+                    subSelectors[next].select();
+                    Set<SelectionKey> selected = subSelectors[next].selectedKeys();
+                    Iterator<SelectionKey> it = selected.iterator();
+                    while (it.hasNext()) {
+                        dispatch(it.next());
+                    }
+//                    selected.clear();
+//                    }
+
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        void dispatch (SelectionKey sk) {
+            Runnable r = (Runnable) sk.attachment();
+            if (r != null) {
+                r.run();
+            }
+        }
+    }
+
+
     //4.Handler Setup
     final class Handler implements Runnable {
 
         final SocketChannel socket; //用于处理业务逻辑 非阻塞读写操作
         final SelectionKey sk; //获取当前的绑定事件和状态
-//        final Selector sel;
+        //        final Selector sel;
         ByteBuffer input = ByteBuffer.allocate(MAXIN); //用于channel的读
         ByteBuffer output = ByteBuffer.allocate(MAXOUT);//用于channel的写
         static final int READING = 0, SENDING = 1, PROCESSING = 3;
@@ -241,14 +251,18 @@ public class Reactor implements Runnable {
     }
 
     public static void main(String[] args) throws IOException {
-        Reactor reactor = new Reactor(9999);
+        MultipleReactor reactor = new MultipleReactor(9999);
         Thread server = new Thread(reactor);
+        new Thread(new SubReactor()).start();
         server.start();
         //这里不能中断
         while (!server.isInterrupted()) {
         }
-        if (reactor.selectors != null) {
-            for (Selector selector : reactor.selectors) {
+        if (reactor.selector != null) {
+            reactor.selector.close();
+        }
+        if (reactor.subSelectors != null) {
+            for (Selector selector : reactor.subSelectors) {
                 selector.close();
             }
         }
