@@ -1,4 +1,4 @@
-package com.lpp.demo.copyZoo;
+package com.lpp.demo.copyZoo.server;
 
 import com.sun.istack.internal.NotNull;
 
@@ -19,6 +19,8 @@ public class NIOServerCnxnFactory {
     private final Set<SelectorThread> selectorThreads = new HashSet<SelectorThread>();
 
     ServerSocketChannel ss;
+
+    protected ZooKeeperServer zkServer;
 
     private abstract class AbstractSelectThread extends Thread {
 
@@ -156,7 +158,7 @@ public class NIOServerCnxnFactory {
         }
 
         private void handleIO(SelectionKey key) {
-//            IOWorkRequest workRequest = new IOWorkRequest(this, key);
+            IOWorkRequest workRequest = new IOWorkRequest(this, key);
 //            NIOServerCnxn cnxn = (NIOServerCnxn) key.attachment();
 //
 //            // Stop selecting this key while processing on its
@@ -169,13 +171,14 @@ public class NIOServerCnxnFactory {
             // connection
 
 //            System.out.println("开始处理逻辑");
-            if (key.isReadable()) {
-                read(key);
-            } else if (key.isWritable()) {
-                send(key);
-            }
+//            if (key.isReadable()) {
+//                read(key);
+//            } else if (key.isWritable()) {
+//                send(key);
+//            }
 
             key.interestOps(0);
+            workerPool.schedule(workRequest);
         }
 
         private void processAcceptedConnections() {
@@ -184,8 +187,8 @@ public class NIOServerCnxnFactory {
                 SelectionKey key = null;
                 try {
                     key = accepted.register(selector, SelectionKey.OP_READ);
-//                    NIOServerCnxn cnxn = createConnection(accepted, key, this);
-//                    key.attach(cnxn);
+                    NIOServerCnxn cnxn = createConnection(accepted, key, this);
+                    key.attach(cnxn);
 //                    addCnxn(cnxn);
                 } catch (IOException e) {
                     // register, createConnection
@@ -281,6 +284,42 @@ public class NIOServerCnxnFactory {
             @Override
             public Thread newThread(@NotNull Runnable r) {
                 return new Thread(r, threadNamePrefix + "-pool-" + poolNumber.getAndIncrement());
+            }
+        }
+    }
+
+    private class IOWorkRequest extends WorkerService.WorkRequest {
+
+        private final SelectorThread selectorThread;
+        private final SelectionKey key;
+        private final NIOServerCnxn cnxn;
+
+        IOWorkRequest(SelectorThread selectorThread, SelectionKey key) {
+            this.selectorThread = selectorThread;
+            this.key = key;
+            this.cnxn = (NIOServerCnxn) key.attachment();
+        }
+
+        @Override
+        public void doWork() throws InterruptedException {
+            if (!key.isValid()) {
+                selectorThread.cleanupSelectionKey(key);
+                return;
+            }
+
+            if (key.isReadable() || key.isWritable()) {
+                cnxn.doIO(key);
+
+                // Check if we shutdown or doIO() closed this connection
+//                if (stopped) {
+//                    cnxn.close(ServerCnxn.DisconnectReason.SERVER_SHUTDOWN);
+//                    return;
+//                }
+                if (!key.isValid()) {
+                    selectorThread.cleanupSelectionKey(key);
+                    return;
+                }
+//                touchCnxn(cnxn);
             }
         }
     }
@@ -391,6 +430,10 @@ public class NIOServerCnxnFactory {
         }
     }
 
+    protected NIOServerCnxn createConnection(SocketChannel sock, SelectionKey sk, SelectorThread selectorThread) throws IOException {
+        return new NIOServerCnxn(zkServer, sock, sk, this, selectorThread);
+    }
+
     public NIOServerCnxnFactory() {
     }
     private AcceptThread acceptThread;
@@ -407,10 +450,13 @@ public class NIOServerCnxnFactory {
         acceptThread = new AcceptThread(ss, new InetSocketAddress(9999), selectorThreads);
     }
 
+    protected WorkerService workerPool;
+    private int numWorkerThreads = 64;
+
     public void start() {
-//        if (workerPool == null) {
-//            workerPool = new WorkerService("NIOWorker", numWorkerThreads, false);
-//        }
+        if (workerPool == null) {
+            workerPool = new WorkerService("NIOWorker", numWorkerThreads, false);
+        }
         for (SelectorThread thread : selectorThreads) {
             if (thread.getState() == Thread.State.NEW) {
                 thread.start();

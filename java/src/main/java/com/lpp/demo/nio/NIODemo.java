@@ -26,6 +26,14 @@ import java.nio.channels.FileChannel;
  *  FloatBuffer
  *  DoubleBuffer
  *
+ *  Buffer 有三个关键参数：position  limit  capacity
+ *      1.创建时： 新建一个大小为 8 个字节的缓冲区，此时 position 为 0，而 limit = capacity = 8。capacity 变量不会改变
+ *      2.写入数据： 从输入通道 写入 5字节 到buffer中，此时 position 为 5，limit 保持不变。
+ *      3.写出数据准备： 在将缓冲区的数据写到输出通道之前，
+ *          a.先调用 flip() 方法，这个方法将 limit 设置为当前 position，并将 position 设置为 0
+ *      4.写出数据： 从缓冲区中取 4 个字节到输出缓冲中，此时 position 设为 4。
+ *      5.清空数据：调用 clear() 方法来清空缓冲区，此时 position 和 limit 都被设置为最初位置。
+ *
  *
  *  SocketChannel  -->  ByteBuffer  -->  网卡
  *                <--   ByteBuffer  <--
