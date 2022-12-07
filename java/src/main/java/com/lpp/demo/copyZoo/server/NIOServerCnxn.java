@@ -1,16 +1,25 @@
 package com.lpp.demo.copyZoo.server;
 
 import com.lpp.demo.copyZoo.jute.BinaryInputArchive;
+import com.lpp.demo.copyZoo.jute.BinaryOutputArchive;
+import com.lpp.demo.copyZoo.jute.Record;
 import com.lpp.demo.copyZoo.zookeeper.compat.ProtocolManager;
+import com.lpp.demo.copyZoo.zookeeper.data.Stat;
 import com.lpp.demo.copyZoo.zookeeper.proto.ConnectRequest;
 import com.lpp.demo.copyZoo.server.NIOServerCnxnFactory.SelectorThread;
+import com.lpp.demo.copyZoo.zookeeper.proto.ReplyHeader;
+import com.lpp.demo.copyZoo.zookeeper.proto.RequestHeader;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 处理客户端IO事务，每个客户端对应一个，但是只有一个线程处理
@@ -25,11 +34,15 @@ public class NIOServerCnxn {
 
     protected ByteBuffer incomingBuffer = lenBuffer;
 
+    private final Queue<ByteBuffer> outgoingBuffers = new LinkedBlockingQueue<ByteBuffer>();
+
     private final SelectorThread selectorThread;
 
     private final SelectionKey sk;
 
     private boolean initialized;
+
+    final ZooKeeperServer zkServer = new ZooKeeperServer();
 
     public final ProtocolManager protocolManager = new ProtocolManager();
 
@@ -49,6 +62,34 @@ public class NIOServerCnxn {
         InetAddress addr = ((InetSocketAddress) sock.socket().getRemoteSocketAddress()).getAddress();
 //        addAuthInfo(new Id("ip", addr.getHostAddress()));
 //        this.sessionTimeout = factory.sessionlessCnxnTimeout;
+    }
+
+    // returns whether we are interested in writing, which is determined
+    // by whether we have any pending buffers on the output queue or not
+    private boolean getWriteInterest() {
+        return !outgoingBuffers.isEmpty();
+    }
+
+    // returns whether we are interested in taking new requests, which is
+    // determined by whether we are currently throttled or not
+    private boolean getReadInterest() {
+        return !throttled.get();
+    }
+
+    private final AtomicBoolean throttled = new AtomicBoolean(false);
+
+    public int getInterestOps() {
+        if (!isSelectable()) {
+            return 0;
+        }
+        int interestOps = 0;
+        if (getReadInterest()) {
+            interestOps |= SelectionKey.OP_READ;
+        }
+        if (getWriteInterest()) {
+            interestOps |= SelectionKey.OP_WRITE;
+        }
+        return interestOps;
     }
 
     /**
@@ -139,22 +180,153 @@ public class NIOServerCnxn {
      * @throws IOException
      */
     private void readConnectRequest() throws IOException{
-        if (!isZKServerRunning()) {
-            throw new IOException("ZooKeeperServer not running");
-        }
+//        if (!isZKServerRunning()) {
+//            throw new IOException("ZooKeeperServer not running");
+//        }
         BinaryInputArchive bia = BinaryInputArchive.getArchive(new ByteBufferInputStream(incomingBuffer));
         ConnectRequest request = protocolManager.deserializeConnectRequest(bia);
-//        zkServer.processConnectRequest(this, request);
-//        initialized = true;
+        zkServer.processConnectRequest(this, request);
+        initialized = true;
     }
 
     protected void readRequest() throws IOException {
-//        RequestHeader h = new RequestHeader();
-//        ByteBufferInputStream.byteBuffer2Record(incomingBuffer, h);
-//        RequestRecord request = RequestRecord.fromBytes(incomingBuffer.slice());
-//        zkServer.processPacket(this, h, request);
+        //解析请求头
+        RequestHeader h = new RequestHeader();
+        ByteBufferInputStream.byteBuffer2Record(incomingBuffer, h);
+        //解析请求数据
+        RequestRecord request = RequestRecord.fromBytes(incomingBuffer.slice());
+        zkServer.processPacket(this, h, request);
     }
 
 
-    void handleWrite(SelectionKey k) throws IOException {}
+    void handleWrite(SelectionKey k) throws IOException {
+        try {
+            SocketChannel socket = (SocketChannel) sk.channel();
+//            output.clear();
+//            output.put("服务器已收到，over".getBytes());
+//            output.flip();
+            socket.write(outgoingBuffers.peek());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        if (outputIsComplet()) {
+//            //取消对应的channel和 事件的注册
+////                sk.cancel();
+//        }
+    }
+
+    private static final ByteBuffer packetSentinel = ByteBuffer.allocate(0);
+
+    public int sendResponse(ReplyHeader h, Record r, String tag) throws IOException {
+        return sendResponse(h, r, tag, null, null, -1);
+    }
+
+    public int sendResponse(ReplyHeader h, Record r, String tag, String cacheKey, Stat stat, int opCode) {
+        int responseSize = 0;
+        try {
+            ByteBuffer[] bb = serialize(h, r, tag, cacheKey, stat, opCode);
+            responseSize = bb[0].getInt();
+            bb[0].rewind();
+            sendBuffer(bb);
+//            decrOutstandingAndCheckThrottle(h);
+        } catch (Exception e) {
+//            LOG.warn("Unexpected exception. Destruction averted.", e);
+        }
+        return responseSize;
+    }
+
+    protected ByteBuffer[] serialize(ReplyHeader h, Record r, String tag,
+                                     String cacheKey, Stat stat, int opCode) throws IOException {
+        byte[] header = serializeRecord(h);
+        byte[] data = null;
+        if (r != null) {
+            ResponseCache cache = null;
+//            Counter cacheHit = null, cacheMiss = null;
+            switch (opCode) {
+//                case OpCode.getData : {
+//                    cache = zkServer.getReadResponseCache();
+//                    cacheHit = ServerMetrics.getMetrics().RESPONSE_PACKET_CACHE_HITS;
+//                    cacheMiss = ServerMetrics.getMetrics().RESPONSE_PACKET_CACHE_MISSING;
+//                    break;
+//                }
+//                case OpCode.getChildren2 : {
+//                    cache = zkServer.getGetChildrenResponseCache();
+//                    cacheHit = ServerMetrics.getMetrics().RESPONSE_PACKET_GET_CHILDREN_CACHE_HITS;
+//                    cacheMiss = ServerMetrics.getMetrics().RESPONSE_PACKET_GET_CHILDREN_CACHE_MISSING;
+//                    break;
+//                }
+                default:
+                    // op codes where response cache is not supported.
+            }
+
+//            if (cache != null && stat != null && cacheKey != null && !cacheKey.endsWith(Quotas.statNode)) {
+                // Use cache to get serialized data.
+                //
+                // NB: Tag is ignored both during cache lookup and serialization,
+                // since is is not used in read responses, which are being cached.
+                data = cache.get(cacheKey, stat);
+                if (data == null) {
+                    // Cache miss, serialize the response and put it in cache.
+                    data = serializeRecord(r);
+                    cache.put(cacheKey, data, stat);
+//                    cacheMiss.add(1);
+                } else {
+//                    cacheHit.add(1);
+                }
+            } else {
+                data = serializeRecord(r);
+            }
+//        }
+        int dataLength = data == null ? 0 : data.length;
+        int packetLength = header.length + dataLength;
+//        ServerStats serverStats = serverStats();
+//        if (serverStats != null) {
+//            serverStats.updateClientResponseSize(packetLength);
+//        }
+        ByteBuffer lengthBuffer = ByteBuffer.allocate(4).putInt(packetLength);
+        lengthBuffer.rewind();
+
+        int bufferLen = data != null ? 3 : 2;
+        ByteBuffer[] buffers = new ByteBuffer[bufferLen];
+
+        buffers[0] = lengthBuffer;
+        buffers[1] = ByteBuffer.wrap(header);
+        if (data != null) {
+            buffers[2] = ByteBuffer.wrap(data);
+        }
+        return buffers;
+    }
+
+    protected byte[] serializeRecord(Record record) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(ZooKeeperServer.intBufferStartingSizeBytes);
+        BinaryOutputArchive bos = BinaryOutputArchive.getArchive(baos);
+        bos.writeRecord(record, null);
+        return baos.toByteArray();
+    }
+
+    public void sendBuffer(ByteBuffer... buffers) {
+//        if (LOG.isTraceEnabled()) {
+//            LOG.trace("Add a buffer to outgoingBuffers, sk {} is valid: {}", sk, sk.isValid());
+//        }
+
+        synchronized (outgoingBuffers) {
+            for (ByteBuffer buffer : buffers) {
+                outgoingBuffers.add(buffer);
+            }
+            outgoingBuffers.add(packetSentinel);
+        }
+        requestInterestOpsUpdate();
+    }
+
+    private final AtomicBoolean selectable = new AtomicBoolean(true);
+
+    public boolean isSelectable() {
+        return sk.isValid() && selectable.get();
+    }
+
+    private void requestInterestOpsUpdate() {
+        if (isSelectable()) {
+            selectorThread.addInterestOpsUpdateRequest(sk);
+        }
+    }
 }

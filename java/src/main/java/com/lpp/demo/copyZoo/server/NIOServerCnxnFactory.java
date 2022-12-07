@@ -102,6 +102,14 @@ public class NIOServerCnxnFactory {
             return true;
         }
 
+        public boolean addInterestOpsUpdateRequest(SelectionKey sk) {
+            if (!updateQueue.offer(sk)) {
+                return false;
+            }
+            wakeupSelector();
+            return true;
+        }
+
         @Override
         public void run() {
             try {
@@ -109,6 +117,7 @@ public class NIOServerCnxnFactory {
                     try {
                         select();
                         processAcceptedConnections();
+                        processInterestOpsUpdateRequests();
                     } catch (RuntimeException e) {
                         System.out.println("Ignoring unexpected runtime exception" + e);
 //                        LOG.warn("Ignoring unexpected runtime exception", e);
@@ -194,6 +203,23 @@ public class NIOServerCnxnFactory {
                     // register, createConnection
                     cleanupSelectionKey(key);
 //                    fastCloseSock(accepted);
+                }
+            }
+        }
+
+        /**
+         * Iterate over the queue of connections ready to resume selection,
+         * and restore their interest ops selection mask.
+         */
+        private void processInterestOpsUpdateRequests() {
+            SelectionKey key;
+            while ((key = updateQueue.poll()) != null) {
+                if (!key.isValid()) {
+                    cleanupSelectionKey(key);
+                }
+                NIOServerCnxn cnxn = (NIOServerCnxn) key.attachment();
+                if (cnxn.isSelectable()) {
+                    key.interestOps(cnxn.getInterestOps());
                 }
             }
         }
@@ -478,6 +504,7 @@ class Test {
         NIOServerCnxnFactory factory = new NIOServerCnxnFactory();
         factory.configure();
         factory.start();
+        System.out.println("server start...");
         shutdownLatch.await();
     }
 }
