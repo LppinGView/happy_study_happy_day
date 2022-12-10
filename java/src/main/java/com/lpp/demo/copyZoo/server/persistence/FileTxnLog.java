@@ -18,16 +18,11 @@
 
 package com.lpp.demo.copyZoo.server.persistence;
 
-import org.apache.jute.*;
-import org.apache.zookeeper.server.Request;
-import org.apache.zookeeper.server.ServerMetrics;
-import org.apache.zookeeper.server.ServerStats;
-import org.apache.zookeeper.server.TxnLogEntry;
-import org.apache.zookeeper.server.util.SerializeUtils;
-import org.apache.zookeeper.txn.TxnDigest;
-import org.apache.zookeeper.txn.TxnHeader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.lpp.demo.copyZoo.jute.*;
+import com.lpp.demo.copyZoo.server.ServerStats;
+import com.lpp.demo.copyZoo.zookeeper.persistence.FileHeader;
+import com.lpp.demo.copyZoo.zookeeper.txn.TxnDigest;
+import com.lpp.demo.copyZoo.zookeeper.txn.TxnHeader;
 
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -84,7 +79,7 @@ import java.util.zip.Checksum;
  */
 public class FileTxnLog implements TxnLog, Closeable {
 
-    private static final Logger LOG;
+//    private static final Logger LOG;
 
     public static final int TXNLOG_MAGIC = ByteBuffer.wrap("ZKLG".getBytes()).getInt();
 
@@ -114,7 +109,7 @@ public class FileTxnLog implements TxnLog, Closeable {
     private static long txnLogSizeLimit = -1;
 
     static {
-        LOG = LoggerFactory.getLogger(FileTxnLog.class);
+//        LOG = LoggerFactory.getLogger(FileTxnLog.class);
 
         /** Local variable to read fsync.warningthresholdms into */
         Long fsyncWarningThreshold;
@@ -125,7 +120,7 @@ public class FileTxnLog implements TxnLog, Closeable {
 
         Long logSize = Long.getLong(txnLogSizeLimitSetting, -1);
         if (logSize > 0) {
-            LOG.info("{} = {}", txnLogSizeLimitSetting, logSize);
+//            LOG.info("{} = {}", txnLogSizeLimitSetting, logSize);
 
             // Convert to bytes
             logSize = logSize * 1024;
@@ -251,7 +246,7 @@ public class FileTxnLog implements TxnLog, Closeable {
      * returns true iff something appended, otw false
      */
     public synchronized boolean append(TxnHeader hdr, Record txn) throws IOException {
-              return append(hdr, txn, null);
+          return append(hdr, txn, null);
     }
 
     @Override
@@ -260,16 +255,16 @@ public class FileTxnLog implements TxnLog, Closeable {
             return false;
         }
         if (hdr.getZxid() <= lastZxidSeen) {
-            LOG.warn(
-                "Current zxid {} is <= {} for {}",
-                hdr.getZxid(),
-                lastZxidSeen,
-                Request.op2String(hdr.getType()));
+//            LOG.warn(
+//                "Current zxid {} is <= {} for {}",
+//                hdr.getZxid(),
+//                lastZxidSeen,
+//                Request.op2String(hdr.getType()));
         } else {
             lastZxidSeen = hdr.getZxid();
         }
         if (logStream == null) {
-            LOG.info("Creating new log file: {}", Util.makeLogName(hdr.getZxid()));
+//            LOG.info("Creating new log file: {}", Util.makeLogName(hdr.getZxid()));
 
             logFileWrite = new File(logDir, Util.makeLogName(hdr.getZxid()));
             fos = new FileOutputStream(logFileWrite);
@@ -351,7 +346,7 @@ public class FileTxnLog implements TxnLog, Closeable {
                 zxid = hdr.getZxid();
             }
         } catch (IOException e) {
-            LOG.warn("Unexpected exception", e);
+//            LOG.warn("Unexpected exception", e);
         }
         return zxid;
     }
@@ -378,15 +373,15 @@ public class FileTxnLog implements TxnLog, Closeable {
                         serverStats.incrementFsyncThresholdExceedCount();
                     }
 
-                    LOG.warn(
-                        "fsync-ing the write ahead log in {} took {}ms which will adversely effect operation latency."
-                            + "File size is {} bytes. See the ZooKeeper troubleshooting guide",
-                        Thread.currentThread().getName(),
-                        syncElapsedMS,
-                        channel.size());
+//                    LOG.warn(
+//                        "fsync-ing the write ahead log in {} took {}ms which will adversely effect operation latency."
+//                            + "File size is {} bytes. See the ZooKeeper troubleshooting guide",
+//                        Thread.currentThread().getName(),
+//                        syncElapsedMS,
+//                        channel.size());
                 }
 
-                ServerMetrics.getMetrics().FSYNC_TIME.add(syncElapsedMS);
+//                ServerMetrics.getMetrics().FSYNC_TIME.add(syncElapsedMS);
             }
         }
         while (streamsToFlush.size() > 1) {
@@ -398,7 +393,7 @@ public class FileTxnLog implements TxnLog, Closeable {
             long logSize = getCurrentLogSize();
 
             if (logSize > txnLogSizeLimit) {
-                LOG.debug("Log size limit reached: {}", logSize);
+//                LOG.debug("Log size limit reached: {}", logSize);
                 rollLog();
             }
         }
@@ -455,7 +450,7 @@ public class FileTxnLog implements TxnLog, Closeable {
             raf.close();
             while (itr.goToNextLog()) {
                 if (!itr.logFile.delete()) {
-                    LOG.warn("Unable to truncate {}", itr.logFile);
+//                    LOG.warn("Unable to truncate {}", itr.logFile);
                 }
             }
         }
@@ -482,7 +477,7 @@ public class FileTxnLog implements TxnLog, Closeable {
                     is.close();
                 }
             } catch (IOException e) {
-                LOG.warn("Ignoring exception during close", e);
+//                LOG.warn("Ignoring exception during close", e);
             }
         }
     }
@@ -707,10 +702,10 @@ public class FileTxnLog implements TxnLog, Closeable {
         protected InputArchive createInputArchive(File logFile) throws IOException {
             if (inputStream == null) {
                 inputStream = new PositionInputStream(new BufferedInputStream(new FileInputStream(logFile)));
-                LOG.debug("Created new input stream: {}", logFile);
+//                LOG.debug("Created new input stream: {}", logFile);
                 ia = BinaryInputArchive.getArchive(inputStream);
                 inStreamCreated(ia, inputStream);
-                LOG.debug("Created new input archive: {}", logFile);
+//                LOG.debug("Created new input archive: {}", logFile);
             }
             return ia;
         }
@@ -746,12 +741,12 @@ public class FileTxnLog implements TxnLog, Closeable {
                 if (crcValue != crc.getValue()) {
                     throw new IOException(CRC_ERROR);
                 }
-                TxnLogEntry logEntry = SerializeUtils.deserializeTxn(bytes);
-                hdr = logEntry.getHeader();
-                record = logEntry.getTxn();
-                digest = logEntry.getDigest();
+//                TxnLogEntry logEntry = SerializeUtils.deserializeTxn(bytes);
+//                hdr = logEntry.getHeader();
+//                record = logEntry.getTxn();
+//                digest = logEntry.getDigest();
             } catch (EOFException e) {
-                LOG.debug("EOF exception", e);
+//                LOG.debug("EOF exception", e);
                 inputStream.close();
                 inputStream = null;
                 ia = null;

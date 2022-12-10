@@ -18,6 +18,9 @@
 
 package com.lpp.demo.copyZoo.server.persistence;
 
+import com.lpp.demo.copyZoo.jute.InputArchive;
+import com.lpp.demo.copyZoo.jute.OutputArchive;
+
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -87,13 +90,14 @@ public class SnapStream {
                     is = new GZIPInputStream(fis);
                     break;
                 case SNAPPY:
-                    is = new SnappyInputStream(fis);
+//                    is = new SnappyInputStream(fis);
                     break;
                 case CHECKED:
                 default:
                     is = new BufferedInputStream(fis);
             }
-            return new CheckedInputStream(is, new Adler32());
+//            return new CheckedInputStream(is, new Adler32());
+            return null;
         } catch (IOException e) {
             fis.close();
             throw e;
@@ -109,27 +113,28 @@ public class SnapStream {
      * @throws IOException
      */
     public static CheckedOutputStream getOutputStream(File file, boolean fsync) throws IOException {
-        OutputStream fos = fsync ? new AtomicFileOutputStream(file) : new FileOutputStream(file);
-        OutputStream os;
-        switch (streamMode) {
-        case GZIP:
-            try {
-                os = new GZIPOutputStream(fos);
-            } catch (IOException e) {
-                fos.close();
-                throw e;
-            }
-            break;
-        case SNAPPY:
-            // Unlike SnappyInputStream, the SnappyOutputStream
-            // constructor cannot throw an IOException.
-            os = new SnappyOutputStream(fos);
-            break;
-        case CHECKED:
-        default:
-            os = new BufferedOutputStream(fos);
-        }
-        return new CheckedOutputStream(os, new Adler32());
+//        OutputStream fos = fsync ? new AtomicFileOutputStream(file) : new FileOutputStream(file);
+//        OutputStream os;
+//        switch (streamMode) {
+//        case GZIP:
+//            try {
+////                os = new GZIPOutputStream(fos);
+//            } catch (IOException e) {
+////                fos.close();
+//                throw e;
+//            }
+//            break;
+//        case SNAPPY:
+//            // Unlike SnappyInputStream, the SnappyOutputStream
+//            // constructor cannot throw an IOException.
+////            os = new SnappyOutputStream(fos);
+//            break;
+//        case CHECKED:
+//        default:
+//            os = new BufferedOutputStream(fos);
+//        }
+//        return new CheckedOutputStream(os, new Adler32());
+        return null;
     }
 
     /**
@@ -180,7 +185,7 @@ public class SnapStream {
             isValid = isValidGZipStream(file);
             break;
         case SNAPPY:
-            isValid = isValidSnappyStream(file);
+//            isValid = isValidSnappyStream(file);
             break;
         case CHECKED:
         default:
@@ -227,7 +232,7 @@ public class SnapStream {
         byte[] byteArray = new byte[2];
         try (FileInputStream fis = new FileInputStream(f)) {
             if (2 != fis.read(byteArray, 0, 2)) {
-                LOG.error("Read incorrect number of bytes from {}", f.getName());
+//                LOG.error("Read incorrect number of bytes from {}", f.getName());
                 return false;
             }
             ByteBuffer bb = ByteBuffer.wrap(byteArray);
@@ -236,7 +241,7 @@ public class SnapStream {
             int magic = magicHeader[0] & 0xff | ((magicHeader[1] << 8) & 0xff00);
             return magic == GZIPInputStream.GZIP_MAGIC;
         } catch (FileNotFoundException e) {
-            LOG.error("Unable to open file {}", f.getName(), e);
+//            LOG.error("Unable to open file {}", f.getName(), e);
             return false;
         }
     }
@@ -249,22 +254,22 @@ public class SnapStream {
      * @return true if it has the correct Snappy magic string
      * @throws IOException
      */
-    private static boolean isValidSnappyStream(File f) throws IOException {
-        byte[] byteArray = new byte[SnappyCodec.MAGIC_LEN];
-        try (FileInputStream fis = new FileInputStream(f)) {
-            if (SnappyCodec.MAGIC_LEN != fis.read(byteArray, 0, SnappyCodec.MAGIC_LEN)) {
-                LOG.error("Read incorrect number of bytes from {}", f.getName());
-                return false;
-            }
-            ByteBuffer bb = ByteBuffer.wrap(byteArray);
-            byte[] magicHeader = new byte[SnappyCodec.MAGIC_LEN];
-            bb.get(magicHeader, 0, SnappyCodec.MAGIC_LEN);
-            return Arrays.equals(magicHeader, SnappyCodec.getMagicHeader());
-        } catch (FileNotFoundException e) {
-            LOG.error("Unable to open file {}", f.getName(), e);
-            return false;
-        }
-    }
+//    private static boolean isValidSnappyStream(File f) throws IOException {
+//        byte[] byteArray = new byte[SnappyCodec.MAGIC_LEN];
+//        try (FileInputStream fis = new FileInputStream(f)) {
+//            if (SnappyCodec.MAGIC_LEN != fis.read(byteArray, 0, SnappyCodec.MAGIC_LEN)) {
+//                LOG.error("Read incorrect number of bytes from {}", f.getName());
+//                return false;
+//            }
+//            ByteBuffer bb = ByteBuffer.wrap(byteArray);
+//            byte[] magicHeader = new byte[SnappyCodec.MAGIC_LEN];
+//            bb.get(magicHeader, 0, SnappyCodec.MAGIC_LEN);
+//            return Arrays.equals(magicHeader, SnappyCodec.getMagicHeader());
+//        } catch (FileNotFoundException e) {
+//            LOG.error("Unable to open file {}", f.getName(), e);
+//            return false;
+//        }
+//    }
 
     /**
      * Certify the Checked stream integrity by checking the header
@@ -290,14 +295,14 @@ public class SnapStream {
                 readlen += l;
             }
             if (readlen != bytes.length) {
-                LOG.info("Invalid snapshot {}. too short, len = {} bytes", f.getName(), readlen);
+//                LOG.info("Invalid snapshot {}. too short, len = {} bytes", f.getName(), readlen);
                 return false;
             }
             ByteBuffer bb = ByteBuffer.wrap(bytes);
             int len = bb.getInt();
             byte b = bb.get();
             if (len != 1 || b != '/') {
-                LOG.info("Invalid snapshot {}. len = {}, byte = {}", f.getName(), len, (b & 0xff));
+//                LOG.info("Invalid snapshot {}. len = {}, byte = {}", f.getName(), len, (b & 0xff));
                 return false;
             }
         }

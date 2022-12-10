@@ -18,28 +18,25 @@
 
 package com.lpp.demo.copyZoo.server.persistence;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
 public class FilePadding {
 
-    private static final Logger LOG;
+//    private static final Logger LOG;
     private static long preAllocSize = 65536 * 1024;
     private static final ByteBuffer fill = ByteBuffer.allocateDirect(1);
 
     static {
-        LOG = LoggerFactory.getLogger(FileTxnLog.class);
+//        LOG = LoggerFactory.getLogger(FileTxnLog.class);
 
         String size = System.getProperty("zookeeper.preAllocSize");
         if (size != null) {
             try {
                 preAllocSize = Long.parseLong(size) * 1024;
             } catch (NumberFormatException e) {
-                LOG.warn("{} is not a valid value for preAllocSize", size);
+//                LOG.warn("{} is not a valid value for preAllocSize", size);
             }
         }
     }

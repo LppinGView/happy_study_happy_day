@@ -18,19 +18,14 @@
 
 package com.lpp.demo.copyZoo.server.persistence;
 
-import org.apache.jute.Record;
-import org.apache.zookeeper.KeeperException;
-import org.apache.zookeeper.KeeperException.Code;
-import org.apache.zookeeper.ZooDefs.OpCode;
-import org.apache.zookeeper.common.Time;
-import org.apache.zookeeper.server.*;
-import org.apache.zookeeper.server.DataTree.ProcessTxnResult;
-import org.apache.zookeeper.server.persistence.TxnLog.TxnIterator;
-import org.apache.zookeeper.txn.CreateSessionTxn;
-import org.apache.zookeeper.txn.TxnDigest;
-import org.apache.zookeeper.txn.TxnHeader;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.lpp.demo.copyZoo.jute.Record;
+import com.lpp.demo.copyZoo.server.DataTree;
+import com.lpp.demo.copyZoo.server.Request;
+import com.lpp.demo.copyZoo.server.ServerStats;
+import com.lpp.demo.copyZoo.server.ZooDefs;
+import com.lpp.demo.copyZoo.server.common.Time;
+import com.lpp.demo.copyZoo.zookeeper.txn.CreateSessionTxn;
+import com.lpp.demo.copyZoo.zookeeper.txn.TxnHeader;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -61,7 +56,7 @@ public class FileTxnSnapLog {
     public static final int VERSION = 2;
     public static final String version = "version-";
 
-    private static final Logger LOG = LoggerFactory.getLogger(FileTxnSnapLog.class);
+//    private static final Logger LOG = LoggerFactory.getLogger(FileTxnSnapLog.class);
 
     public static final String ZOOKEEPER_DATADIR_AUTOCREATE = "zookeeper.datadir.autocreate";
 
@@ -84,7 +79,7 @@ public class FileTxnSnapLog {
      */
     public interface PlayBackListener {
 
-        void onTxnLoaded(TxnHeader hdr, Record rec, TxnDigest digest);
+//        void onTxnLoaded(TxnHeader hdr, Record rec, TxnDigest digest);
 
     }
 
@@ -107,7 +102,7 @@ public class FileTxnSnapLog {
      * @param snapDir the snapshot directory
      */
     public FileTxnSnapLog(File dataDir, File snapDir) throws IOException {
-        LOG.debug("Opening datadir:{} snapDir:{}", dataDir, snapDir);
+//        LOG.debug("Opening datadir:{} snapDir:{}", dataDir, snapDir);
 
         this.dataDir = new File(dataDir, version + VERSION);
         this.snapDir = new File(snapDir, version + VERSION);
@@ -118,7 +113,7 @@ public class FileTxnSnapLog {
             System.getProperty(ZOOKEEPER_DATADIR_AUTOCREATE, ZOOKEEPER_DATADIR_AUTOCREATE_DEFAULT));
 
         trustEmptySnapshot = Boolean.getBoolean(ZOOKEEPER_SNAPSHOT_TRUST_EMPTY);
-        LOG.info("{} : {}", ZOOKEEPER_SNAPSHOT_TRUST_EMPTY, trustEmptySnapshot);
+//        LOG.info("{} : {}", ZOOKEEPER_SNAPSHOT_TRUST_EMPTY, trustEmptySnapshot);
 
         if (!this.dataDir.exists()) {
             if (!enableAutocreate) {
@@ -249,12 +244,12 @@ public class FileTxnSnapLog {
     public long restore(DataTree dt, Map<Long, Integer> sessions, PlayBackListener listener) throws IOException {
         long snapLoadingStartTime = Time.currentElapsedTime();
         long deserializeResult = snapLog.deserialize(dt, sessions);
-        ServerMetrics.getMetrics().STARTUP_SNAP_LOAD_TIME.add(Time.currentElapsedTime() - snapLoadingStartTime);
+//        ServerMetrics.getMetrics().STARTUP_SNAP_LOAD_TIME.add(Time.currentElapsedTime() - snapLoadingStartTime);
         FileTxnLog txnLog = new FileTxnLog(dataDir);
         boolean trustEmptyDB;
         File initFile = new File(dataDir.getParent(), "initialize");
         if (Files.deleteIfExists(initFile.toPath())) {
-            LOG.info("Initialize file found, an empty database will not block voting participation");
+//            LOG.info("Initialize file found, an empty database will not block voting participation");
             trustEmptyDB = true;
         } else {
             trustEmptyDB = autoCreateDB;
@@ -266,14 +261,14 @@ public class FileTxnSnapLog {
             // zxid in the snapshotZxidDigest, if it's not reset to null after
             // restoring, it means either there are not enough txns to cover that
             // zxid or that txn is missing
-            DataTree.ZxidDigest snapshotZxidDigest = dt.getDigestFromLoadedSnapshot();
-            if (snapshotZxidDigest != null) {
-                LOG.warn(
-                        "Highest txn zxid 0x{} is not covering the snapshot digest zxid 0x{}, "
-                                + "which might lead to inconsistent state",
-                        Long.toHexString(highestZxid),
-                        Long.toHexString(snapshotZxidDigest.getZxid()));
-            }
+//            DataTree.ZxidDigest snapshotZxidDigest = dt.getDigestFromLoadedSnapshot();
+//            if (snapshotZxidDigest != null) {
+//                LOG.warn(
+//                        "Highest txn zxid 0x{} is not covering the snapshot digest zxid 0x{}, "
+//                                + "which might lead to inconsistent state",
+//                        Long.toHexString(highestZxid),
+//                        Long.toHexString(snapshotZxidDigest.getZxid()));
+//            }
             return highestZxid;
         };
 
@@ -286,7 +281,7 @@ public class FileTxnSnapLog {
                 if (!trustEmptySnapshot) {
                     throw new IOException(EMPTY_SNAPSHOT_WARNING + "Something is broken!");
                 } else {
-                    LOG.warn("{}This should only be allowed during upgrading.", EMPTY_SNAPSHOT_WARNING);
+//                    LOG.warn("{}This should only be allowed during upgrading.", EMPTY_SNAPSHOT_WARNING);
                     return finalizer.run();
                 }
             }
@@ -300,8 +295,8 @@ public class FileTxnSnapLog {
                 return 0L;
             } else {
                 /* return a zxid of -1, since we are possibly missing data */
-                LOG.warn("Unexpected empty data tree, setting zxid to -1");
-                dt.lastProcessedZxid = -1L;
+//                LOG.warn("Unexpected empty data tree, setting zxid to -1");
+//                dt.lastProcessedZxid = -1L;
                 return -1L;
             }
         }
@@ -324,7 +319,7 @@ public class FileTxnSnapLog {
         DataTree dt,
         Map<Long, Integer> sessions,
         PlayBackListener listener) throws IOException {
-        TxnIterator itr = txnLog.read(dt.lastProcessedZxid + 1);
+        TxnLog.TxnIterator itr = txnLog.read(dt.lastProcessedZxid + 1);
         long highestZxid = dt.lastProcessedZxid;
         TxnHeader hdr;
         int txnLoaded = 0;
@@ -339,7 +334,7 @@ public class FileTxnSnapLog {
                     return dt.lastProcessedZxid;
                 }
                 if (hdr.getZxid() < highestZxid && highestZxid != 0) {
-                    LOG.error("{}(highestZxid) > {}(next log) for type {}", highestZxid, hdr.getZxid(), hdr.getType());
+//                    LOG.error("{}(highestZxid) > {}(next log) for type {}", highestZxid, hdr.getZxid(), hdr.getType());
                 } else {
                     highestZxid = hdr.getZxid();
                 }
@@ -347,14 +342,14 @@ public class FileTxnSnapLog {
                     processTransaction(hdr, dt, sessions, itr.getTxn());
                     dt.compareDigest(hdr, itr.getTxn(), itr.getDigest());
                     txnLoaded++;
-                } catch (KeeperException.NoNodeException e) {
+                } catch (Exception e) {
                     throw new IOException("Failed to process transaction type: "
                                           + hdr.getType()
                                           + " error: "
                                           + e.getMessage(),
                                           e);
                 }
-                listener.onTxnLoaded(hdr, itr.getTxn(), itr.getDigest());
+//                listener.onTxnLoaded(hdr, itr.getTxn(), itr.getDigest());
                 if (!itr.next()) {
                     break;
                 }
@@ -366,9 +361,10 @@ public class FileTxnSnapLog {
         }
 
         long loadTime = Time.currentElapsedTime() - startTime;
-        LOG.info("{} txns loaded in {} ms", txnLoaded, loadTime);
-        ServerMetrics.getMetrics().STARTUP_TXNS_LOADED.add(txnLoaded);
-        ServerMetrics.getMetrics().STARTUP_TXNS_LOAD_TIME.add(loadTime);
+        System.out.println(txnLoaded + " txns loaded in " +  loadTime + " ms");
+//        LOG.info("{} txns loaded in {} ms", txnLoaded, loadTime);
+//        ServerMetrics.getMetrics().STARTUP_TXNS_LOADED.add(txnLoaded);
+//        ServerMetrics.getMetrics().STARTUP_TXNS_LOAD_TIME.add(loadTime);
 
         return highestZxid;
     }
@@ -380,7 +376,7 @@ public class FileTxnSnapLog {
      * @return TxnIterator
      * @throws IOException
      */
-    public TxnIterator readTxnLog(long zxid) throws IOException {
+    public TxnLog.TxnIterator readTxnLog(long zxid) throws IOException {
         return readTxnLog(zxid, true);
     }
 
@@ -394,7 +390,7 @@ public class FileTxnSnapLog {
      * @return TxnIterator
      * @throws IOException
      */
-    public TxnIterator readTxnLog(long zxid, boolean fastForward) throws IOException {
+    public TxnLog.TxnIterator readTxnLog(long zxid, boolean fastForward) throws IOException {
         FileTxnLog txnLog = new FileTxnLog(dataDir);
         return txnLog.read(zxid, fastForward);
     }
@@ -410,29 +406,29 @@ public class FileTxnSnapLog {
         TxnHeader hdr,
         DataTree dt,
         Map<Long, Integer> sessions,
-        Record txn) throws KeeperException.NoNodeException {
-        ProcessTxnResult rc;
+        Record txn){
+        DataTree.ProcessTxnResult rc;
         switch (hdr.getType()) {
-        case OpCode.createSession:
+        case ZooDefs.OpCode.createSession:
             sessions.put(hdr.getClientId(), ((CreateSessionTxn) txn).getTimeOut());
-            if (LOG.isTraceEnabled()) {
-                ZooTrace.logTraceMessage(
-                    LOG,
-                    ZooTrace.SESSION_TRACE_MASK,
-                    "playLog --- create session in log: 0x" + Long.toHexString(hdr.getClientId())
-                    + " with timeout: " + ((CreateSessionTxn) txn).getTimeOut());
-            }
+//            if (LOG.isTraceEnabled()) {
+//                ZooTrace.logTraceMessage(
+//                    LOG,
+//                    ZooTrace.SESSION_TRACE_MASK,
+//                    "playLog --- create session in log: 0x" + Long.toHexString(hdr.getClientId())
+//                    + " with timeout: " + ((CreateSessionTxn) txn).getTimeOut());
+//            }
             // give dataTree a chance to sync its lastProcessedZxid
             rc = dt.processTxn(hdr, txn);
             break;
-        case OpCode.closeSession:
+        case ZooDefs.OpCode.closeSession:
             sessions.remove(hdr.getClientId());
-            if (LOG.isTraceEnabled()) {
-                ZooTrace.logTraceMessage(
-                    LOG,
-                    ZooTrace.SESSION_TRACE_MASK,
-                    "playLog --- close session in log: 0x" + Long.toHexString(hdr.getClientId()));
-            }
+//            if (LOG.isTraceEnabled()) {
+//                ZooTrace.logTraceMessage(
+//                    LOG,
+//                    ZooTrace.SESSION_TRACE_MASK,
+//                    "playLog --- close session in log: 0x" + Long.toHexString(hdr.getClientId()));
+//            }
             rc = dt.processTxn(hdr, txn);
             break;
         default:
@@ -445,9 +441,9 @@ public class FileTxnSnapLog {
          * snapshot. Then when the snapshot is restored, NONODE/NODEEXISTS
          * errors could occur. It should be safe to ignore these.
          */
-        if (rc.err != Code.OK.intValue()) {
-            LOG.debug("Ignoring processTxn failure hdr: {}, error: {}, path: {}", hdr.getType(), rc.err, rc.path);
-        }
+//        if (rc.err != Code.OK.intValue()) {
+//            LOG.debug("Ignoring processTxn failure hdr: {}, error: {}, path: {}", hdr.getType(), rc.err, rc.path);
+//        }
     }
 
     /**
@@ -473,7 +469,7 @@ public class FileTxnSnapLog {
         boolean syncSnap) throws IOException {
         long lastZxid = dataTree.lastProcessedZxid;
         File snapshotFile = new File(snapDir, Util.makeSnapshotName(lastZxid));
-        LOG.info("Snapshotting: 0x{} to {}", Long.toHexString(lastZxid), snapshotFile);
+//        LOG.info("Snapshotting: 0x{} to {}", Long.toHexString(lastZxid), snapshotFile);
         try {
             snapLog.serialize(dataTree, sessionsWithTimeouts, snapshotFile, syncSnap);
         } catch (IOException e) {
@@ -484,9 +480,9 @@ public class FileTxnSnapLog {
                  * Doing so will eventually result in valid snapshots being
                  * removed during cleanup. */
                 if (snapshotFile.delete()) {
-                    LOG.info("Deleted empty snapshot file: {}", snapshotFile.getAbsolutePath());
+//                    LOG.info("Deleted empty snapshot file: {}", snapshotFile.getAbsolutePath());
                 } else {
-                    LOG.warn("Could not delete empty snapshot file: {}", snapshotFile.getAbsolutePath());
+//                    LOG.warn("Could not delete empty snapshot file: {}", snapshotFile.getAbsolutePath());
                 }
             } else {
                 /* Something else went wrong when writing the snapshot out to
@@ -524,7 +520,7 @@ public class FileTxnSnapLog {
                 return truncated;
             }
         } catch (IOException e) {
-            LOG.error("Unable to truncate Txn log", e);
+//            LOG.error("Unable to truncate Txn log", e);
             return false;
         }
     }

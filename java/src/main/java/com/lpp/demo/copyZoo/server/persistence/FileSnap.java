@@ -18,14 +18,13 @@
 
 package com.lpp.demo.copyZoo.server.persistence;
 
-import org.apache.jute.BinaryInputArchive;
-import org.apache.jute.BinaryOutputArchive;
-import org.apache.jute.InputArchive;
-import org.apache.jute.OutputArchive;
-import org.apache.zookeeper.server.DataTree;
-import org.apache.zookeeper.server.util.SerializeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.lpp.demo.copyZoo.jute.BinaryInputArchive;
+import com.lpp.demo.copyZoo.jute.BinaryOutputArchive;
+import com.lpp.demo.copyZoo.jute.InputArchive;
+import com.lpp.demo.copyZoo.jute.OutputArchive;
+import com.lpp.demo.copyZoo.server.DataTree;
+import com.lpp.demo.copyZoo.server.util.SerializeUtils;
+import com.lpp.demo.copyZoo.zookeeper.persistence.FileHeader;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +48,7 @@ public class FileSnap implements SnapShot {
     private volatile boolean close = false;
     private static final int VERSION = 2;
     private static final long dbId = -1;
-    private static final Logger LOG = LoggerFactory.getLogger(FileSnap.class);
+//    private static final Logger LOG = LoggerFactory.getLogger(FileSnap.class);
     public static final int SNAP_MAGIC = ByteBuffer.wrap("ZKSN".getBytes()).getInt();
 
     public static final String SNAPSHOT_FILE_PREFIX = "snapshot";
@@ -83,12 +82,13 @@ public class FileSnap implements SnapShot {
         boolean foundValid = false;
         for (int i = 0, snapListSize = snapList.size(); i < snapListSize; i++) {
             snap = snapList.get(i);
-            LOG.info("Reading snapshot {}", snap);
+            System.out.println("Reading snapshot {}" + snap);
+//            LOG.info("Reading snapshot {}", snap);
             snapZxid = Util.getZxidFromName(snap.getName(), SNAPSHOT_FILE_PREFIX);
             try (CheckedInputStream snapIS = SnapStream.getInputStream(snap)) {
                 InputArchive ia = BinaryInputArchive.getArchive(snapIS);
                 deserialize(dt, sessions, ia);
-                SnapStream.checkSealIntegrity(snapIS, ia);
+//                SnapStream.checkSealIntegrity(snapIS, ia);
 
                 // Digest feature was added after the CRC to make it backward
                 // compatible, the older code can still read snapshots which
@@ -96,28 +96,29 @@ public class FileSnap implements SnapShot {
                 //
                 // To check the intact, after adding digest we added another
                 // CRC check.
-                if (dt.deserializeZxidDigest(ia, snapZxid)) {
-                    SnapStream.checkSealIntegrity(snapIS, ia);
-                }
+//                if (dt.deserializeZxidDigest(ia, snapZxid)) {
+//                    SnapStream.checkSealIntegrity(snapIS, ia);
+//                }
 
                 foundValid = true;
                 break;
             } catch (IOException e) {
-                LOG.warn("problem reading snap file {}", snap, e);
+//                LOG.warn("problem reading snap file {}", snap, e);
             }
         }
         if (!foundValid) {
             throw new IOException("Not able to find valid snapshots in " + snapDir);
         }
-        dt.lastProcessedZxid = snapZxid;
-        lastSnapshotInfo = new SnapshotInfo(dt.lastProcessedZxid, snap.lastModified() / 1000);
+//        dt.lastProcessedZxid = snapZxid;
+//        lastSnapshotInfo = new SnapshotInfo(dt.lastProcessedZxid, snap.lastModified() / 1000);
 
         // compare the digest if this is not a fuzzy snapshot, we want to compare
         // and find inconsistent asap.
-        if (dt.getDigestFromLoadedSnapshot() != null) {
-            dt.compareSnapshotDigests(dt.lastProcessedZxid);
-        }
-        return dt.lastProcessedZxid;
+//        if (dt.getDigestFromLoadedSnapshot() != null) {
+//            dt.compareSnapshotDigests(dt.lastProcessedZxid);
+//        }
+//        return dt.lastProcessedZxid;
+        return 0;
     }
 
     /**
@@ -167,17 +168,17 @@ public class FileSnap implements SnapShot {
             // we should catch the exceptions
             // from the valid snapshot and continue
             // until we find a valid one
-            try {
-                if (SnapStream.isValidSnapshot(f)) {
-                    list.add(f);
-                    count++;
-                    if (count == n) {
-                        break;
-                    }
-                }
-            } catch (IOException e) {
-                LOG.warn("invalid snapshot {}", f, e);
-            }
+//            try {
+////                if (SnapStream.isValidSnapshot(f)) {
+////                    list.add(f);
+////                    count++;
+////                    if (count == n) {
+////                        break;
+////                    }
+////                }
+//            } catch (IOException e) {
+////                LOG.warn("invalid snapshot {}", f, e);
+//            }
         }
         return list;
     }
@@ -244,7 +245,7 @@ public class FileSnap implements SnapShot {
                 OutputArchive oa = BinaryOutputArchive.getArchive(snapOS);
                 FileHeader header = new FileHeader(SNAP_MAGIC, VERSION, dbId);
                 serialize(dt, sessions, oa, header);
-                SnapStream.sealStream(snapOS, oa);
+//                SnapStream.sealStream(snapOS, oa);
 
                 // Digest feature was added after the CRC to make it backward
                 // compatible, the older code cal still read snapshots which
@@ -253,7 +254,7 @@ public class FileSnap implements SnapShot {
                 // To check the intact, after adding digest we added another
                 // CRC check.
                 if (dt.serializeZxidDigest(oa)) {
-                    SnapStream.sealStream(snapOS, oa);
+//                    SnapStream.sealStream(snapOS, oa);
                 }
 
                 lastSnapshotInfo = new SnapshotInfo(

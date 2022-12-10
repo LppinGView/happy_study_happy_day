@@ -39,6 +39,7 @@ public interface TxnLog extends Closeable {
     void setServerStats(ServerStats serverStats);
 
     /**
+     * 当前日志大小太大，则滚动日志
      * roll the current
      * log being appended to
      * @throws IOException
