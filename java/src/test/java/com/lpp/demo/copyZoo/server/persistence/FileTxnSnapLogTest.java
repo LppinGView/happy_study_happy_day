@@ -3,11 +3,9 @@ package com.lpp.demo.copyZoo.server.persistence;
 import com.lpp.demo.copyZoo.zookeeper.txn.CreateTxn;
 import com.lpp.demo.copyZoo.zookeeper.txn.TxnHeader;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 
 public class FileTxnSnapLogTest {
 

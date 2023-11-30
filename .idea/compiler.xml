@@ -7,10 +7,9 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="java" />
+        <module name="pulsar" />
+        <module name="kafka" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="java" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

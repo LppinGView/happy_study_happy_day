@@ -5,7 +5,6 @@
       <module fileurl="file://$PROJECT_DIR$/cache/cache.iml" filepath="$PROJECT_DIR$/cache/cache.iml" />
       <module fileurl="file://$PROJECT_DIR$/devOps/devOps.iml" filepath="$PROJECT_DIR$/devOps/devOps.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/happy_study_happy_day.iml" filepath="$PROJECT_DIR$/.idea/happy_study_happy_day.iml" />
-      <module fileurl="file://$PROJECT_DIR$/java/java.iml" filepath="$PROJECT_DIR$/java/java.iml" />
       <module fileurl="file://$PROJECT_DIR$/misroservice/misroservice.iml" filepath="$PROJECT_DIR$/misroservice/misroservice.iml" />
       <module fileurl="file://$PROJECT_DIR$/mq/mq.iml" filepath="$PROJECT_DIR$/mq/mq.iml" />
       <module fileurl="file://$PROJECT_DIR$/mybatis/mybatis.iml" filepath="$PROJECT_DIR$/mybatis/mybatis.iml" />
