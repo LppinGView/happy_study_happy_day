@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Random;
 
 public class ProducerTest {
     private static final Logger log = LoggerFactory.getLogger(ProducerTest.class);
@@ -51,14 +50,14 @@ public class ProducerTest {
 
 //        producer.partitionsFor();
         for (;;){
-            int partition = RandomUtils.nextInt(3);
+            int partition = RandomUtils.nextInt(4);
             System.out.println("partition num:"+ partition);
-            ProducerRecord<String, String> record = new ProducerRecord<>("my_topic_new", partition, null, "Hello, Kafka!");
+            ProducerRecord<String, String> record = new ProducerRecord<>("www_topic", partition, null, "Hello, Kafka!");
 //            producer.send(record);
 //            producer.beginTransaction();
             producer.send(record, (a, b)->{
                 //更新发送端 的状态
-                System.out.println("i am ok");
+                System.out.println("callback handler");
             });
             log.info("消息已发送， 消息为:{}", record);
 //            producer.commitTransaction();
