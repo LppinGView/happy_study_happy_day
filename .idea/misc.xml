@@ -8,6 +8,7 @@
         <option value="$PROJECT_DIR$/mq/com.lpp.kafka/pom.xml" />
         <option value="$PROJECT_DIR$/mq/pulsar/pom.xml" />
         <option value="$PROJECT_DIR$/mq/kafka/pom.xml" />
+        <option value="$PROJECT_DIR$/app/pom.xml" />
       </list>
     </option>
   </component>

@@ -1,0 +1,29 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="KAFKA_SYNC" class="org.example.appenders.KafkaAppender">
+        <
+<!--        <enable>false</enable>-->
+<!--        <url>172.17.8.146:9092</url>-->
+<!--        <topic>app_log</topic>-->
+        <!-- Additional fields(Pairs of key: value) -->
+<!--        <additionalField>-->
+<!--            <key>APP_NAME</key>-->
+<!--            <value>${spring.application.name}</value>-->
+<!--        </additionalField>-->
+
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+<!--            <pattern>${KAFKA_LOG_PATTERN:-%d{${KAFKA_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%rEx{short}}}</pattern>-->
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+<!--        <appender-ref ref="KAFKA_SYNC" />-->
+    </root>
+</configuration>

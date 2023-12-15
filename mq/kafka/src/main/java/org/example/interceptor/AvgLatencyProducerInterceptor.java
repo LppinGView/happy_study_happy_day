@@ -11,7 +11,7 @@ public class AvgLatencyProducerInterceptor implements ProducerInterceptor<String
 
     @Override
     public ProducerRecord<String, String> onSend(ProducerRecord<String, String> record) {
-        ZookeeperConfig.connet().initEphemeralNode("/totalSentMessage").incrementValue("/totalSentMessage");
+//        ZookeeperConfig.connet().initEphemeralNode("/totalSentMessage").incrementValue("/totalSentMessage");
         return record;
     }
 

@@ -17,8 +17,8 @@ public class OtherConsumerTest {
 
         String brokerList = "172.17.8.146:9092";
         String groupId = "group2";
-        String topic = "www_topic";
-        final int cpuCount = Runtime.getRuntime().availableProcessors();
+        String topic = "app_server";
+//        final int cpuCount = Runtime.getRuntime().availableProcessors();
 
         /**
          * Partition1
@@ -27,7 +27,7 @@ public class OtherConsumerTest {
          * /-------------------------/
          */
         ConsumerHandler consumers = new ConsumerHandler(brokerList, groupId, topic);
-        consumers.consume(cpuCount);
+        consumers.consume(4);
 //        try {
 //            Thread.sleep(1000000);
 //        } catch (InterruptedException ignored) {}
@@ -53,15 +53,17 @@ class Worker implements Runnable {
                 // 这里写你的消息处理逻辑，本例中只是简单地打印消息
                 System.out.println(Thread.currentThread().getName() + " consumed " + record.partition()
                         + "th message with offset: " + record.offset());
+                System.out.println(Thread.currentThread().getName() + " consumed msg:" + record.value());
             }
 
             long lastOffset = partitionRecords.get(partitionRecords.size() - 1).offset();
-            synchronized (offsets){
+            synchronized (offsets){ //同一个partition 存在多个work， 每个work仅仅负责提交当前的位移，如果当前位移大于已提交的位移，则更新
                 if (!offsets.containsKey(partition)){
                     offsets.put(partition, new OffsetAndMetadata(lastOffset+1));
                 }else {
                     long curr = offsets.get(partition).offset();
                     if (curr <= lastOffset + 1){
+                        //这种处理 默认之前的都已经消费成功。
                         offsets.replace(partition, new OffsetAndMetadata(lastOffset + 1));
                     }
                 }
@@ -129,7 +131,7 @@ class ConsumerHandler {
     private void commitOffsets(){
         // 尽量降低synchronized块对offsets锁定的时间
         Map<TopicPartition, OffsetAndMetadata> unmodfiedMap;
-        synchronized (offsets){
+        synchronized (offsets){// 这里 offsets 需要加锁：提交时，offset不能进行更改；
             if (offsets.isEmpty()){
                 return;
             }
