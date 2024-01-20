@@ -54,7 +54,7 @@ public class ProducerTest implements MScenter {
         ProducerRecord<String, String> record = null != partition? new ProducerRecord<>(topic, partition, null, msg)
                 : new ProducerRecord<>(topic, msg);
         producer.send(record, (a,b)->callback.doAction(topic));
-        log.info("msg sended topic:{}, msg:{}", topic, msg);
+        log.debug("msg sended topic:{}, msg:{}", topic, msg);
     }
 
     @Override

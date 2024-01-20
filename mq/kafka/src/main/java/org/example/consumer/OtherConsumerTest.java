@@ -53,7 +53,7 @@ class Worker implements Runnable {
                 // 这里写你的消息处理逻辑，本例中只是简单地打印消息
                 System.out.println(Thread.currentThread().getName() + " consumed " + record.partition()
                         + "th message with offset: " + record.offset());
-                System.out.println(Thread.currentThread().getName() + " consumed msg:" + record.value());
+//                System.out.println(Thread.currentThread().getName() + " consumed msg:" + record.value());
             }
 
             long lastOffset = partitionRecords.get(partitionRecords.size() - 1).offset();

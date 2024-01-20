@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="app" />
         <module name="java" />
+        <module name="common" />
         <module name="pulsar" />
         <module name="kafka" />
       </profile>

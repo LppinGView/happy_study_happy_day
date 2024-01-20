@@ -1,7 +1,8 @@
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+<!--            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>-->
+            <pattern>%d{${KAFKA_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%rEx{short}}</pattern>
         </encoder>
     </appender>
 
@@ -16,13 +17,13 @@
 <!--        </additionalField>-->
 
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
-<!--            <pattern>${KAFKA_LOG_PATTERN:-%d{${KAFKA_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%rEx{short}}}</pattern>-->
+<!--            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>-->
+            <pattern>%d{${KAFKA_DATEFORMAT_PATTERN:-yyyy-MM-dd HH:mm:ss.SSS}} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%rEx{short}}</pattern>
         </encoder>
     </appender>
 
     <root level="INFO">
         <appender-ref ref="STDOUT" />
-<!--        <appender-ref ref="KAFKA_SYNC" />-->
+        <appender-ref ref="KAFKA_SYNC" />
     </root>
 </configuration>
