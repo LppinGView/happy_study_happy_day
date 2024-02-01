@@ -22,6 +22,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.apache.commons.lang3.reflect.FieldUtils.readField;
+import static org.example.utils.Utils.debugLog;
 
 public class FileQueueWorker implements Worker<Object>, EventHandler<FileQueueEvent>, TimeoutHandler {
     private final Worker<ByteMessage> kafkaWorker;
@@ -179,16 +180,16 @@ class RockDbWrapper extends TtlDB implements AutoCloseable {
         nativeHandle = readNativeHandle(db);
     }
 
-        @SneakyThrows
-        public static long readNativeHandle(TtlDB db) {
-            return (long) readField(db, "nativeHandle_", true);
-        }
-
-        public void put(ColumnFamilyHandleWrapper columnFamilyHandle, WriteOptionsWrapper writeOpts, byte[] key, byte[] value, int len) throws RocksDBException {
-            put(nativeHandle, writeOpts.getNativeHandle(), key, 0, key.length, value,
-                    0, len, columnFamilyHandle.getNativeHandle());
-        }
+    @SneakyThrows
+    public static long readNativeHandle(TtlDB db) {
+        return (long) readField(db, "nativeHandle_", true);
     }
+
+    public void put(ColumnFamilyHandleWrapper columnFamilyHandle, WriteOptionsWrapper writeOpts, byte[] key, byte[] value, int len) throws RocksDBException {
+        put(nativeHandle, writeOpts.getNativeHandle(), key, 0, key.length, value,
+                0, len, columnFamilyHandle.getNativeHandle());
+    }
+}
 
 class FIFOFile {
     private DbIndex dbIndex = new DbIndex();
@@ -203,7 +204,7 @@ class FIFOFile {
     public void addItem(long id, byte[] data, int len) {
         writeLongToBufferBE(id, keyBuffer, 0);
         try {
-            System.out.println("db put to file");
+            debugLog("db put to file");
 //            db.put(logColumnWrapper, writeOptionsWrapper, keyBuffer, data, len);
 //            dbIndex.addSeq(id);
 //            delaySave();
@@ -247,7 +248,35 @@ class FIFOFile {
         return currentMessage;
     }
 
-    public void next() {}
+    private long lastReadId = 0;
+
+    private byte[] readBuffer = new byte[5120];
+    public void next() {
+        try {
+            currentMessage = new DataByteMessage(0, readBuffer, 1111);
+//            if (dbIndex.seek(lastReadId + 1)) {
+//                do {
+//                    long seq = dbIndex.currentSeq();
+//                    lastReadId = seq;
+//                    writeLongToBufferBE(seq, keyBuffer, 0);
+//                    int readCount = db.get(logColumn, keyBuffer, readBuffer);
+//                    if (RocksDB.NOT_FOUND == readCount) {
+//                        continue;
+//                    }
+//                    if (readCount > readBuffer.length) {
+//                        readBuffer = new byte[marginToBuffer(readCount)];
+//                        readCount = db.get(logColumn, keyBuffer, readBuffer);
+//                    }
+//                    currentMessage = new DataByteMessage(seq, readBuffer, readCount);
+//                    return;
+//                } while (dbIndex.next());
+//            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+//        currentMessage = null;
+    }
 }
 
 //

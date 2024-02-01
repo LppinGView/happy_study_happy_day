@@ -8,8 +8,6 @@ import com.lmax.disruptor.dsl.ProducerType;
 import lombok.Data;
 import lombok.val;
 import org.example.utils.ThreadUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.concurrent.ThreadFactory;
@@ -18,13 +16,12 @@ import java.util.concurrent.atomic.LongAdder;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.startsWithAny;
+import static org.example.utils.Utils.debugLog;
 
 public class LogWorker implements Worker<Object>,
         EventHandler<LogEvent>,
         SequenceReportingEventHandler<LogEvent>,
         BatchStartAware {
-
-    private Logger log = LoggerFactory.getLogger(LogWorker.class);
 
     private final Disruptor<LogEvent> queue;
     private final RingBuffer<LogEvent> producer;
@@ -75,6 +72,31 @@ public class LogWorker implements Worker<Object>,
         Object eventLog = event.getLog();
         boolean success = false;
 
+        if (eventLog instanceof LastSeq) {
+            long lastSeq = ((LastSeq) eventLog).getSeq();
+            // 本地文件缓冲区已经发完了, 后续日志切换到pulsar
+            if (lastSeq == lastMessageId && !directWriteToPulsar) {
+                directWriteToPulsar = true;
+                debugLog("本地cache已经清空,切换到pulsar");
+            }
+            if (!directWriteToPulsar) {
+                debugLog("sync seq:" + lastSeq);
+            }
+            while (!(success = fileQueueWorker.sendMessage(eventLog))
+                    && (producer.getCursor() - sequence < HIGH_WATER_LEVEL_FILE) // 缓冲区比较从容的话可以多等些时间, 尽可能把消息发送出去
+            ) {
+                if (isClosed) {
+                    break;
+                }
+                ThreadUtils.sleep(5);
+            }
+            if (!success) {
+                missingCount.increment();
+            }
+            event.clear();
+            return;
+        }
+
         // 普通的日志
         long messageId = lastMessageId + 1;
         event.setId(messageId);
@@ -93,7 +115,7 @@ public class LogWorker implements Worker<Object>,
             // 写入失败, 切换到本地文件缓冲区
             if (!success && directWriteToPulsar) {
                 directWriteToPulsar = false;
-                log.debug("pulsar阻塞,切换到file cache");
+                debugLog("pulsar阻塞,切换到file cache");
             }
         }
 
@@ -180,6 +202,18 @@ public class LogWorker implements Worker<Object>,
 class LogEvent extends ByteMessage{
     private Object log;
 //    private JsonByteBuilder byteBuilder = JsonByteBuilder.create(2 * 1024);
+
+    public void clear() {
+        this.log = null;
+//        if (byteBuilder != null) {
+//            if (byteBuilder.capacity() > 2048) {
+//                cache = new WeakReference<>(byteBuilder);
+//                byteBuilder = null;
+//            } else {
+//                byteBuilder.clear();
+//            }
+//        }
+    }
 
     @Override
     public void apply(ByteEvent event) {

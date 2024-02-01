@@ -3,7 +3,6 @@ package org.example.appenders.kafka;
 import com.lmax.disruptor.*;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.example.producer.ProducerTest;
 import org.example.utils.ThreadUtils;
@@ -16,8 +15,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.example.utils.Utils.debugLog;
 
-@Slf4j
 public class KafkaWorker implements Worker<ByteMessage>,
         EventHandler<KafkaEvent>,
         SequenceReportingEventHandler<KafkaEvent>,
@@ -86,18 +85,18 @@ public class KafkaWorker implements Worker<ByteMessage>,
         int eventSize = byteEvent.getBufferLen();
         long lastMessageId = byteEvent.getId();
         if (eventSize > 5_000_000) {
-            System.out.println("日志过大, 直接丢弃:" + event.getEventString());
+            debugLog("日志过大, 直接丢弃:" + event.getEventString());
         } else {
             producer.push("log", event.getEventString(), null, callback ->{});
         }
         if (++batchIndex >= BATH_MESSAGE_SIZE || endOfBatch) {
             try {
-                log.info("producer.flush()");
+                debugLog("producer.flush()");
 //                producer.flush();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            sequenceCallback.set(sequence);
+//            sequenceCallback.set(sequence);
             batchIndex = 0;
         }
         if (endOfBatch) {
@@ -176,7 +175,7 @@ interface RethrowRunnable {
             try {
                 fun.run();
             } catch (Throwable e) {
-                System.out.println("execute error, but sneaky catch" + e);
+                debugLog("execute error, but sneaky catch" + e);
             }
         };
     }
